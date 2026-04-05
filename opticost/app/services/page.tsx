@@ -6,6 +6,7 @@ import {
   Monitor,
   ShieldCheck,
   TrendingUp,
+  ArrowRight,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 
@@ -15,17 +16,15 @@ export const metadata = {
     "Specialist financial advisory services for government and Defence programs — costing, financial management, commercial analysis and more.",
 };
 
-/* ── Brand tokens ─────────────────────────────────────────────────────────── */
-
 const C = {
-  deepNavy:    "#0A1628",
-  elecBlue:    "#1A6DB5",
+  deepNavy: "#0A1628",
+  elecBlue: "#1A6DB5",
   brightGreen: "#4DC92F",
-  brandBg:     "#F5F7FA",
-  bodyLight:   "#1A1A1A",
+  brandBg: "#F5F7FA",
+  bodyLight: "#1A1A1A",
+  mutedText: "#556070",
+  white: "#FFFFFF",
 } as const;
-
-/* ── Service data ─────────────────────────────────────────────────────────── */
 
 const services = [
   {
@@ -97,77 +96,130 @@ const services = [
   },
 ] as const;
 
-/* ── Page ─────────────────────────────────────────────────────────────────── */
-
 export default function ServicesPage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: C.brandBg, color: C.bodyLight }}>
+    <div
+      className="min-h-screen overflow-x-hidden"
+      style={{ backgroundColor: C.brandBg, color: C.bodyLight }}
+    >
       <Navbar />
 
-      {/* ══════════════════════════════
-          1. HERO
-         ══════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ backgroundColor: C.deepNavy }}>
-        {/* Subtle blue radial glow — matches About hero */}
+      {/* HERO */}
+      <section
+        className="relative isolate overflow-hidden pt-24"
+        style={{ backgroundColor: C.deepNavy }}
+      >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
+          className="absolute inset-0"
           style={{
-            background:
-              "radial-gradient(ellipse 60% 70% at 65% 50%, rgba(26,109,181,0.18) 0%, transparent 70%)",
+            background: `
+              radial-gradient(circle at 18% 25%, rgba(77,201,47,0.15), transparent 28%),
+              radial-gradient(circle at 82% 20%, rgba(26,109,181,0.22), transparent 30%),
+              radial-gradient(circle at 60% 75%, rgba(255,255,255,0.05), transparent 25%)
+            `,
           }}
         />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32">
-          <div className="max-w-2xl">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-20 top-20 h-72 w-72 rounded-full blur-3xl"
+          style={{ backgroundColor: "rgba(77, 201, 47, 0.10)" }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full blur-3xl"
+          style={{ backgroundColor: "rgba(26, 109, 181, 0.18)" }}
+        />
+
+        <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+          <div className="max-w-3xl">
             <div
-              className="mb-6 h-1 w-14 rounded-full"
-              style={{ backgroundColor: C.brightGreen }}
-            />
-            <h1
-              className="mb-5 text-4xl font-bold tracking-tight sm:text-5xl"
-              style={{ color: "#FFFFFF" }}
+              className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em]"
+              style={{
+                borderColor: "rgba(255,255,255,0.14)",
+                backgroundColor: "rgba(255,255,255,0.05)",
+                color: C.brightGreen,
+              }}
             >
-              Core Capabilities
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ backgroundColor: C.brightGreen }}
+              />
+              Our Services
+            </div>
+
+            <h1 className="max-w-3xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+              Specialist services across the full financial lifecycle
             </h1>
-            <p className="text-lg sm:text-xl" style={{ color: "rgba(255,255,255,0.72)" }}>
-              Specialist financial advisory services for government and Defence
-              programs.
+
+            <p
+              className="mt-6 max-w-2xl text-base leading-8 sm:text-lg"
+              style={{ color: "rgba(255,255,255,0.76)" }}
+            >
+              OptiCost Consulting provides specialist financial advisory support
+              for government and Defence programs, spanning costing, commercial
+              analysis, financial control, governance, and capability uplift.
             </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-transform duration-300 hover:-translate-y-0.5"
+                style={{ backgroundColor: C.brightGreen }}
+              >
+                Contact Us
+                <ArrowRight size={18} />
+              </Link>
+
+              <Link
+                href="/people"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3.5 text-sm font-bold transition-colors duration-300"
+                style={{
+                  borderColor: "rgba(255,255,255,0.18)",
+                  color: C.white,
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                }}
+              >
+                Meet Our Team
+              </Link>
+            </div>
           </div>
         </div>
 
         <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
       </section>
 
-      {/* ══════════════════════════════
-          2. SERVICES GRID
-         ══════════════════════════════ */}
-      <section style={{ backgroundColor: C.brandBg }}>
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-
-          {/* Section label */}
-          <div className="mb-14">
+      {/* SERVICES GRID */}
+      <section>
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+          <div className="mb-12">
             <span
-              className="mb-3 inline-block text-xs font-bold uppercase tracking-widest"
-              style={{ color: C.brightGreen }}
+              className="inline-block text-xs font-bold uppercase tracking-[0.22em]"
+              style={{ color: C.elecBlue }}
             >
               What We Do
             </span>
+
             <h2
-              className="text-3xl font-bold sm:text-4xl"
+              className="mt-3 text-3xl font-bold sm:text-4xl"
               style={{ color: C.deepNavy }}
             >
-              Our Services
+              Core capabilities built for complex environments
             </h2>
-            <div
-              className="mt-4 h-1 w-12 rounded-full"
-              style={{ backgroundColor: C.elecBlue }}
-            />
+
+            <p
+              className="mt-4 max-w-3xl text-base leading-8"
+              style={{ color: C.mutedText }}
+            >
+              We combine practical financial delivery with specialist Defence
+              and government expertise to help organisations improve cost
+              visibility, strengthen governance, and make confident investment
+              decisions.
+            </p>
           </div>
 
-          {/* 2-col grid */}
-          <div className="grid gap-6 sm:grid-cols-2 lg:gap-8">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {services.map((svc) => (
               <ServiceCard key={svc.title} {...svc} />
             ))}
@@ -175,33 +227,42 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════
-          3. CALL TO ACTION
-         ══════════════════════════════ */}
-      <section style={{ backgroundColor: C.deepNavy }}>
-        <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
+      {/* CTA */}
+      <section
+        className="relative overflow-hidden"
+        style={{ backgroundColor: C.deepNavy }}
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(circle at 20% 50%, rgba(77,201,47,0.12), transparent 22%), radial-gradient(circle at 80% 40%, rgba(26,109,181,0.18), transparent 24%)",
+          }}
+        />
 
-        <div className="mx-auto max-w-7xl px-6 py-20 text-center lg:px-8 lg:py-28">
-          <h2
-            className="mb-4 text-3xl font-bold sm:text-4xl"
-            style={{ color: "#FFFFFF" }}
-          >
+        <div className="relative mx-auto max-w-5xl px-6 py-20 text-center lg:px-8 lg:py-24">
+          <h2 className="text-3xl font-bold text-white sm:text-4xl">
             Ready to optimise your program costs?
           </h2>
           <p
-            className="mx-auto mb-10 max-w-xl text-lg"
-            style={{ color: "rgba(255,255,255,0.68)" }}
+            className="mx-auto mt-5 max-w-2xl text-base leading-8 sm:text-lg"
+            style={{ color: "rgba(255,255,255,0.72)" }}
           >
             Get in touch with our team of Defence and government finance
-            specialists.
+            specialists for practical, governance-aligned support.
           </p>
-          <Link
-            href="/contact"
-            className="inline-block rounded-md px-8 py-4 text-base font-bold text-white shadow-md transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            style={{ backgroundColor: C.brightGreen }}
-          >
-            Contact Us
-          </Link>
+
+          <div className="mt-8">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-transform duration-300 hover:-translate-y-0.5"
+              style={{ backgroundColor: C.brightGreen }}
+            >
+              Contact Us
+              <ArrowRight size={18} />
+            </Link>
+          </div>
         </div>
 
         <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
@@ -210,44 +271,47 @@ export default function ServicesPage() {
   );
 }
 
-/* ── ServiceCard ──────────────────────────────────────────────────────────── */
-
 function ServiceCard({
   Icon,
   title,
   bullets,
   tagline,
 }: {
-  Icon: React.ComponentType<{ size?: number; strokeWidth?: number; style?: React.CSSProperties }>;
+  Icon: React.ComponentType<{
+    size?: number;
+    strokeWidth?: number;
+    style?: React.CSSProperties;
+  }>;
   title: string;
   bullets: readonly string[];
   tagline: string;
 }) {
   return (
     <div
-      className="flex flex-col rounded-xl bg-white p-7 shadow-sm transition-shadow hover:shadow-md"
-      style={{ borderLeft: `4px solid ${C.brightGreen}` }}
+      className="group h-full rounded-[26px] border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      style={{ borderColor: "rgba(10,22,40,0.07)" }}
     >
-      {/* Icon */}
       <div
-        className="mb-5 flex h-11 w-11 items-center justify-center rounded-lg"
-        style={{ backgroundColor: "rgba(77,201,47,0.10)" }}
+        className="mb-5 inline-flex rounded-2xl p-3 transition-transform duration-300 group-hover:scale-105"
+        style={{ backgroundColor: "rgba(26,109,181,0.08)" }}
       >
-        <Icon size={22} strokeWidth={1.75} style={{ color: C.brightGreen }} />
+        <Icon size={22} strokeWidth={1.75} style={{ color: C.elecBlue }} />
       </div>
 
-      {/* Title */}
       <h3
-        className="mb-4 text-lg font-bold leading-snug"
-        style={{ color: C.elecBlue }}
+        className="text-xl font-bold leading-snug"
+        style={{ color: C.deepNavy }}
       >
         {title}
       </h3>
 
-      {/* Bullet list */}
-      <ul className="mb-6 flex-1 space-y-2">
+      <ul className="mt-5 mb-6 flex-1 space-y-2">
         {bullets.map((b) => (
-          <li key={b} className="flex items-start gap-2.5 text-sm leading-6" style={{ color: C.bodyLight }}>
+          <li
+            key={b}
+            className="flex items-start gap-2.5 text-sm leading-6"
+            style={{ color: C.bodyLight }}
+          >
             <span
               className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full"
               style={{ backgroundColor: C.brightGreen }}
@@ -257,13 +321,11 @@ function ServiceCard({
         ))}
       </ul>
 
-      {/* Divider */}
       <div
         className="mb-4 h-px w-full"
         style={{ backgroundColor: "rgba(0,0,0,0.07)" }}
       />
 
-      {/* Tagline */}
       <p className="text-sm italic" style={{ color: "rgba(26,26,26,0.55)" }}>
         {tagline}
       </p>

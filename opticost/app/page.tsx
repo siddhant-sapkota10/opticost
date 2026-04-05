@@ -1,514 +1,885 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowRight,
+  BarChart3,
+  Briefcase,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardCheck,
+  DollarSign,
+  FileText,
+  ShieldCheck,
+  Target,
+  Users,
+  Zap,
+} from "lucide-react";
 import Navbar from "./components/Navbar";
 
-/* ── Brand ───────────────────────────────────────────────────────────────── */
-
 const C = {
-  deepNavy:    "#0A1628",
-  elecBlue:    "#1A6DB5",
+  deepNavy: "#0A1628",
+  elecBlue: "#1A6DB5",
   brightGreen: "#4DC92F",
-  brandBg:     "#F5F7FA",
-  bodyLight:   "#1A1A1A",
+  brandBg: "#F5F7FA",
+  bodyLight: "#1A1A1A",
+  mutedText: "#556070",
+  white: "#FFFFFF",
 } as const;
 
-/* ── Slides ───────────────────────────────────────────────────────────────── */
-
-const SLIDES = [
+const slides = [
   {
-    headline: "Optimising Costs. Maximising Value.",
-    sub:      "Delivering trusted financial insights to support capability investment decisions with confidence.",
-    cta:      "Our Services →",
-    href:     "/services",
-    bg:       "slide-bg-1",
+    eyebrow: "Defence-Focused Advisory",
+    title: "Delivering trusted cost and financial insights",
+    text: "Supporting capability investment decisions with confidence through defensible, audit-ready financial analysis.",
   },
   {
-    headline: "Defence & Government Finance Specialists.",
-    sub:      "Audit-ready, defensible financial advisory across the full capability lifecycle.",
-    cta:      "About Us →",
-    href:     "/about",
-    bg:       "slide-bg-2",
+    eyebrow: "Whole-of-Life Costing",
+    title: "Optimising costs across complex programs",
+    text: "From business cases to ongoing financial control, OptiCost helps clients maximise value and strengthen investment decisions.",
   },
   {
-    headline: "Join Australia's Leading Finance Advisory Team.",
-    sub:      "We are always looking for exceptional finance talent to help us deliver world-class results.",
-    cta:      "View Opportunities →",
-    href:     "/careers",
-    bg:       "slide-bg-3",
+    eyebrow: "Governance & Assurance",
+    title: "Built for highly governed environments",
+    text: "We provide practical, high-impact support aligned to governance, compliance, and audit-ready delivery.",
   },
 ] as const;
 
-/* ── Capabilities ─────────────────────────────────────────────────────────── */
-
-const CAPS = [
-  "Financial Management & Control",
-  "Capability Costing & Cost Modelling",
-  "Commercial & Contract Financial Analysis",
-  "ICT & Digital Cost Modelling",
-  "Governance, Compliance & Assurance",
-  "Transformation & Capability Uplift",
+const capabilities = [
+  {
+    icon: DollarSign,
+    title: "Financial Management & Control",
+    text: "Budgeting, forecasting, reporting, accruals, reconciliations, and financial governance that strengthen integrity and compliance.",
+  },
+  {
+    icon: BarChart3,
+    title: "Capability Costing & Cost Modelling",
+    text: "Whole-of-life costing, scenario modelling, sensitivity analysis, and Defence-aligned estimates using tools such as CCT, ACEIT, and ClearCost.",
+  },
+  {
+    icon: Briefcase,
+    title: "Commercial & Contract Analysis",
+    text: "Tender pricing, supplier proposal evaluation, contract change analysis, and value-for-money assessments for better commercial outcomes.",
+  },
+  {
+    icon: Zap,
+    title: "ICT & Digital Cost Modelling",
+    text: "Cost clarity for enterprise ICT, cloud environments, infrastructure, and digital transformation initiatives.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Governance, Compliance & Assurance",
+    text: "Risk, contingency, audit support, and financial framework compliance to keep operations controlled and defensible.",
+  },
+  {
+    icon: Users,
+    title: "Transformation & Capability Uplift",
+    text: "Process improvement, APS coaching, financial playbooks, and knowledge transfer that leaves organisations stronger.",
+  },
 ] as const;
 
-/* ── Team ─────────────────────────────────────────────────────────────────── */
-
-const TEAM = [
-  { name: "Shiva Sapkota",    initials: "SS", title: "Principal Consultant (Commercial Finance)" },
-  { name: "Ramesh Pudasaini", initials: "RP", title: "Principal Consultant (Financial Management)" },
-  { name: "Vijay Kansal",     initials: "VK", title: "Senior Consultant (Systems & Process)" },
-  { name: "Anuj Joshi",       initials: "AJ", title: "Senior Consultant (Audit & Compliance)" },
+const differentiators = [
+  "Specialist Defence finance expertise",
+  "Lean and agile delivery model",
+  "Audit-ready, defensible outputs",
+  "Whole-of-life costing capability",
+  "Embedded APS capability transfer",
+  "Experience across multi-billion-dollar programs",
 ] as const;
 
-/* ── Hook: scroll reveal ──────────────────────────────────────────────────── */
+const services = [
+  "Financial Baseline Establishment",
+  "Budgeting & Monthly Reporting",
+  "Forecasting & Estimates",
+  "Contingency & Variance Management",
+  "Commitment & PO Control",
+  "Capitalisation & Asset Reporting",
+  "Whole-of-Life Costing",
+  "Financial Closure & Evaluation",
+  "Governance & Compliance",
+] as const;
 
-function useReveal(threshold = 0.12) {
-  const ref  = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, visible };
-}
+const team = [
+  {
+    name: "Shiva Sapkota",
+    role: "Principal Consultant (Commercial Finance)",
+    initials: "SS",
+    text: "Leads complex procurement, pricing, and capability costing engagements across major government and Defence programs.",
+  },
+  {
+    name: "Ramesh Pudasaini",
+    role: "Principal Consultant (Financial Management)",
+    initials: "RP",
+    text: "Brings deep expertise in budgeting, audit, governance, and end-to-end financial management.",
+  },
+  {
+    name: "Vijay Kansal",
+    role: "Senior Consultant (Systems & Process)",
+    initials: "VK",
+    text: "Focused on transformation, systems optimisation, ERP improvement, and stronger finance operations.",
+  },
+  {
+    name: "Anuj Joshi",
+    role: "Senior Consultant (Audit & Compliance)",
+    initials: "AJ",
+    text: "Provides assurance across audit, compliance, reporting, and financial integrity in complex environments.",
+  },
+] as const;
 
-/* ── Hook: count-up ──────────────────────────────────────────────────────── */
-
-function useCountUp(target: number, active: boolean, duration = 1600) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!active || target === 0) return;
-    let start: number | null = null;
-    const step = (ts: number) => {
-      if (!start) start = ts;
-      const p = Math.min((ts - start) / duration, 1);
-      setVal(Math.floor(p * target));
-      if (p < 1) requestAnimationFrame(step);
-      else setVal(target);
-    };
-    requestAnimationFrame(step);
-  }, [active, target, duration]);
-  return val;
-}
-
-/* ══════════════════════════════════════════════════════════════════════════
-   PAGE
-   ══════════════════════════════════════════════════════════════════════════ */
+const approach = [
+  {
+    step: "Month 1",
+    title: "Stabilise",
+    text: "Validate financial baselines, reconcile commitments, and establish control over the current state.",
+  },
+  {
+    step: "Month 2",
+    title: "Embed",
+    text: "Implement forecasting models, reporting rhythms, dashboards, and governance-aligned processes.",
+  },
+  {
+    step: "Month 3",
+    title: "Optimise",
+    text: "Deliver sharper insights, risk visibility, and practical improvement recommendations for decision-makers.",
+  },
+] as const;
 
 export default function HomePage() {
-  /* Scroll progress */
-  const [scrollPct, setScrollPct] = useState(0);
-  useEffect(() => {
-    const onScroll = () => {
-      const d = document.documentElement;
-      setScrollPct(d.scrollTop / (d.scrollHeight - d.clientHeight) || 0);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const [activeSlide, setActiveSlide] = useState(0);
 
-  /* Slideshow */
-  const [slide,    setSlide]    = useState(0);
-  const [entering, setEntering] = useState(true);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const goTo = useCallback((idx: number) => {
-    setEntering(false);
-    setTimeout(() => {
-      setSlide(idx);
-      setEntering(true);
-    }, 80);
-  }, []);
-
-  const next = useCallback(() => goTo((slide + 1) % SLIDES.length), [slide, goTo]);
-  const prev = useCallback(() => goTo((slide - 1 + SLIDES.length) % SLIDES.length), [slide, goTo]);
+  const currentSlide = useMemo(() => slides[activeSlide], [activeSlide]);
 
   useEffect(() => {
-    timerRef.current = setTimeout(next, 5000);
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [slide, next]);
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
 
-  /* Sections */
-  const splitRef = useReveal();
-  const capsRef  = useReveal();
-  const statsRef = useReveal();
-  const teamRef  = useReveal();
-  const ctaRef   = useReveal();
-  const finalRef = useReveal();
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSlide = () => setActiveSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () =>
+    setActiveSlide((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <>
-      <div id="scroll-progress" style={{ transform: `scaleX(${scrollPct})` }} />
+    <div
+      className="min-h-screen overflow-x-hidden"
+      style={{ backgroundColor: C.brandBg, color: C.bodyLight }}
+    >
+      <Navbar />
 
-      <div className="min-h-screen" style={{ color: C.bodyLight }}>
-        <Navbar />
+      {/* HERO */}
+      <section
+        className="relative isolate overflow-hidden"
+        style={{ backgroundColor: C.deepNavy }}
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(circle at 18% 25%, rgba(77,201,47,0.15), transparent 28%),
+              radial-gradient(circle at 82% 20%, rgba(26,109,181,0.22), transparent 30%),
+              radial-gradient(circle at 60% 75%, rgba(255,255,255,0.05), transparent 25%)
+            `,
+          }}
+        />
 
-        {/* ════════════════════════════════════════════════════
-            SECTION 1 — HERO SLIDESHOW
-           ════════════════════════════════════════════════════ */}
-        <section className="relative flex min-h-[100svh] flex-col overflow-hidden" style={{ backgroundColor: C.deepNavy }}>
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-20 top-20 h-72 w-72 rounded-full blur-3xl"
+          style={{ backgroundColor: "rgba(77, 201, 47, 0.10)" }}
+          animate={{ y: [0, -18, 0], x: [0, 8, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full blur-3xl"
+          style={{ backgroundColor: "rgba(26, 109, 181, 0.18)" }}
+          animate={{ y: [0, 24, 0], x: [0, -12, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
 
-          {/* Slide backgrounds — stacked, current one visible */}
-          {SLIDES.map((s, i) => (
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-16 lg:grid-cols-2 lg:px-8 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="flex flex-col justify-center"
+          >
             <div
-              key={i}
-              className={`absolute inset-0 ${s.bg}`}
+              className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em]"
               style={{
-                opacity:    i === slide ? 1 : 0,
-                transition: "opacity 0.8s ease",
-                zIndex:     0,
+                borderColor: "rgba(255,255,255,0.14)",
+                backgroundColor: "rgba(255,255,255,0.05)",
+                color: C.brightGreen,
               }}
             >
-              {/* Slide 2 geometric diamonds */}
-              {i === 1 && (
-                <div className="geo-wrap">
-                  <div className="geo-diamond" />
-                  <div className="geo-diamond" />
-                  <div className="geo-diamond" />
-                  <div className="geo-diamond" />
-                </div>
-              )}
+              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: C.brightGreen }} />
+              OptiCost Consulting
             </div>
-          ))}
 
-          {/* Dark overlay for readability */}
-          <div className="absolute inset-0 z-[1]" style={{ background: "rgba(10,22,40,0.45)" }} />
+            <h1 className="max-w-xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+              Financial clarity for complex government and Defence programs
+            </h1>
 
-          {/* Slide content */}
-          <div className="relative z-[2] flex flex-1 items-center">
-            <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:px-16">
-              <div className={entering ? "slide-content-enter" : ""} key={slide}>
-                <p
-                  className="slide-headline mb-2 text-xs font-bold uppercase tracking-[0.2em]"
-                  style={{ color: C.brightGreen }}
-                >
-                  OptiCost Consulting
-                </p>
-                <h1
-                  className="slide-headline mb-6 max-w-3xl leading-[1.07] tracking-[-0.025em]"
-                  style={{
-                    fontFamily: "var(--font-syne)",
-                    fontSize:   "clamp(2.2rem, 4.5vw, 3.8rem)",
-                    fontWeight: 800,
-                    color:      "#FFFFFF",
-                  }}
-                >
-                  {SLIDES[slide].headline}
-                </h1>
-                <p
-                  className="slide-sub mb-10 max-w-xl text-base leading-7 sm:text-lg"
-                  style={{ color: "rgba(255,255,255,0.72)" }}
-                >
-                  {SLIDES[slide].sub}
-                </p>
-                <Link
-                  href={SLIDES[slide].href}
-                  className="slide-btn pill-btn pill-btn-white"
-                >
-                  {SLIDES[slide].cta}
-                </Link>
+            <p
+              className="mt-6 max-w-2xl text-base leading-8 sm:text-lg"
+              style={{ color: "rgba(255,255,255,0.76)" }}
+            >
+              We deliver trusted cost, commercial, and financial insights that help
+              organisations optimise costs, strengthen governance, and make confident
+              capability investment decisions.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-transform duration-300 hover:-translate-y-0.5"
+                style={{ backgroundColor: C.brightGreen }}
+              >
+                Get in Touch
+                <ArrowRight size={18} />
+              </Link>
+
+              <Link
+                href="/people"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3.5 text-sm font-bold transition-colors duration-300"
+                style={{
+                  borderColor: "rgba(255,255,255,0.18)",
+                  color: C.white,
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                }}
+              >
+                Meet Our Team
+              </Link>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <StatCard value="100+" label="Years combined experience" />
+              <StatCard value="Defence" label="Focused, specialist advisory" />
+              <StatCard value="End-to-End" label="Financial lifecycle support" />
+            </div>
+          </motion.div>
+
+          {/* SLIDESHOW */}
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.12 }}
+            className="relative flex items-center"
+          >
+            <div
+              className="relative w-full overflow-hidden rounded-[28px] border shadow-2xl"
+              style={{
+                borderColor: "rgba(255,255,255,0.10)",
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)",
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              <div className="border-b px-6 py-4" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p
+                      className="text-xs font-bold uppercase tracking-[0.2em]"
+                      style={{ color: C.brightGreen }}
+                    >
+                      Why OptiCost
+                    </p>
+                    <p className="mt-1 text-sm text-white/70">
+                      Specialist, governance-driven, forecast-focused support
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      aria-label="Previous slide"
+                      onClick={prevSlide}
+                      className="rounded-full border p-2 transition-colors hover:bg-white/10"
+                      style={{ borderColor: "rgba(255,255,255,0.12)", color: C.white }}
+                    >
+                      <ChevronLeft size={18} />
+                    </button>
+                    <button
+                      aria-label="Next slide"
+                      onClick={nextSlide}
+                      className="rounded-full border p-2 transition-colors hover:bg-white/10"
+                      style={{ borderColor: "rgba(255,255,255,0.12)", color: C.white }}
+                    >
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative min-h-[360px] p-6 sm:min-h-[390px] sm:p-8">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeSlide}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.45 }}
+                    className="flex h-full flex-col"
+                  >
+                    <span
+                      className="inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]"
+                      style={{
+                        backgroundColor: "rgba(77,201,47,0.14)",
+                        color: C.brightGreen,
+                      }}
+                    >
+                      {currentSlide.eyebrow}
+                    </span>
+
+                    <h2 className="mt-5 max-w-lg text-3xl font-bold leading-tight text-white sm:text-4xl">
+                      {currentSlide.title}
+                    </h2>
+
+                    <p className="mt-5 max-w-xl text-base leading-8 text-white/75 sm:text-lg">
+                      {currentSlide.text}
+                    </p>
+
+                    <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                      <SlideMiniCard
+                        icon={ClipboardCheck}
+                        title="Audit-Ready Outputs"
+                        text="Clear, defensible, and compliant financial advice."
+                      />
+                      <SlideMiniCard
+                        icon={Target}
+                        title="Outcome-Focused Delivery"
+                        text="Practical insights without the overhead of large firms."
+                      />
+                    </div>
+
+                    <div className="mt-auto pt-8">
+                      <div className="flex items-center gap-2">
+                        {slides.map((_, index) => (
+                          <button
+                            key={index}
+                            aria-label={`Go to slide ${index + 1}`}
+                            onClick={() => setActiveSlide(index)}
+                            className="h-2.5 rounded-full transition-all duration-300"
+                            style={{
+                              width: activeSlide === index ? 34 : 10,
+                              backgroundColor:
+                                activeSlide === index
+                                  ? C.brightGreen
+                                  : "rgba(255,255,255,0.20)",
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
-          </div>
-
-          {/* Arrow + dot controls */}
-          <div className="relative z-[2] mx-auto flex w-full max-w-7xl items-center justify-between px-6 pb-10 lg:px-16">
-            {/* Dots */}
-            <div className="flex items-center gap-2">
-              {SLIDES.map((_, i) => (
-                <button
-                  key={i}
-                  className={`slide-dot ${i === slide ? "active" : ""}`}
-                  onClick={() => goTo(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
-            </div>
-            {/* Arrows */}
-            <div className="flex gap-3">
-              <button className="slide-arrow" onClick={prev} aria-label="Previous slide">
-                <ChevronLeft size={20} />
-              </button>
-              <button className="slide-arrow" onClick={next} aria-label="Next slide">
-                <ChevronRight size={20} />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* ════════════════════════════════════════════════════
-            SECTION 2 — SPLIT PANEL
-           ════════════════════════════════════════════════════ */}
-        <div ref={splitRef.ref} className="grid lg:grid-cols-2">
-
-          {/* LEFT — Electric Blue */}
-          <div
-            className="flex flex-col justify-center px-10 py-20 lg:px-16 lg:py-28"
-            style={{ backgroundColor: C.elecBlue }}
-          >
-            <div
-              className={`reveal-left ${splitRef.visible ? "visible" : ""}`}
-              style={{ transitionDelay: "0s" }}
-            >
-              <div className="mb-3 h-[3px] w-10 rounded-full bg-white/50" />
-              <h2
-                className="mb-8 text-3xl font-bold leading-snug text-white sm:text-4xl lg:text-5xl"
-                style={{ fontFamily: "var(--font-syne)" }}
-              >
-                Smart Advisory.{" "}
-                <span style={{ color: "rgba(255,255,255,0.75)" }}>Driven by Results.</span>
-              </h2>
-              <Link href="/about" className="pill-btn pill-btn-white">
-                GET TO KNOW US <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-
-          {/* RIGHT — Deep Navy + geo lines */}
-          <div
-            className="relative flex flex-col justify-center overflow-hidden px-10 py-20 lg:px-16 lg:py-28"
-            style={{ backgroundColor: C.deepNavy }}
-          >
-            <div className="geo-lines">
-              <div className="geo-line" />
-              <div className="geo-line" />
-              <div className="geo-line" />
-            </div>
-            <div
-              className={`reveal relative z-10 space-y-5 text-base leading-8 ${splitRef.visible ? "visible" : ""}`}
-              style={{ color: "rgba(255,255,255,0.72)", transitionDelay: "0.15s" }}
-            >
-              <p>
-                OptiCost Consulting is a boutique advisory firm founded by senior Defence and
-                public sector finance professionals with decades of experience across major
-                Commonwealth programs.
-              </p>
-              <p>
-                We deliver high-impact, practical financial advisory services without the overheads
-                of large consulting firms. Our lean structure allows us to provide personalised,
-                responsive, and outcome-focused support.
-              </p>
-              <p style={{ color: "rgba(255,255,255,0.45)" }}>
-                Our services focus on government, Defence, and regulated industries.
-              </p>
-            </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* ════════════════════════════════════════════════════
-            SECTION 3 — CORE CAPABILITIES
-           ════════════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: C.brandBg }}>
-          <div ref={capsRef.ref} className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+        <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
+      </section>
 
-            <div className={`reveal mb-2 ${capsRef.visible ? "visible" : ""}`}>
-              <span
-                className="text-xs font-bold uppercase tracking-[0.18em]"
-                style={{ color: C.brightGreen }}
+      {/* ABOUT */}
+      <section className="relative">
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
+            className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]"
+          >
+            <div
+              className="rounded-[28px] border bg-white p-8 shadow-sm"
+              style={{ borderColor: "rgba(10,22,40,0.07)" }}
+            >
+              <SectionEyebrow>About Us</SectionEyebrow>
+              <h2
+                className="mt-3 text-3xl font-bold sm:text-4xl"
+                style={{ color: C.deepNavy }}
               >
-                What We Do
-              </span>
+                Boutique advisory. Senior expertise. Practical outcomes.
+              </h2>
+              <p className="mt-5 text-base leading-8" style={{ color: C.mutedText }}>
+                OptiCost Consulting is a specialist advisory firm founded by senior
+                Defence and public sector finance professionals. We support complex
+                Commonwealth programs with high-impact, practical financial advice
+                tailored to highly governed environments.
+              </p>
+              <p className="mt-4 text-base leading-8" style={{ color: C.mutedText }}>
+                Our lean structure means clients get responsive support, direct access
+                to senior expertise, and solutions focused on value, discipline, and
+                better investment decisions.
+              </p>
             </div>
-            <h2
-              className={`reveal mb-12 text-3xl font-bold sm:text-4xl ${capsRef.visible ? "visible" : ""}`}
-              style={{ fontFamily: "var(--font-syne)", color: C.deepNavy, transitionDelay: "0.08s" }}
+
+            <div
+              className="rounded-[28px] p-8 shadow-sm"
+              style={{
+                background:
+                  `linear-gradient(180deg, ${C.deepNavy} 0%, #102340 100%)`,
+              }}
             >
-              Core Capabilities
-            </h2>
-
-            <div>
-              {CAPS.map((cap, i) => (
-                <Link
-                  key={cap}
-                  href="/services"
-                  className={`cap-row reveal ${capsRef.visible ? "visible" : ""}`}
-                  style={{ transitionDelay: `${0.1 + i * 0.07}s` }}
-                >
-                  <span className="cap-row-title">{cap}</span>
-                  <span className="cap-arrow">
-                    <ArrowRight size={16} style={{ color: C.brightGreen }} />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ════════════════════════════════════════════════════
-            SECTION 4 — STATS BAR
-           ════════════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: C.deepNavy }}>
-          <div className="h-[2px]" style={{ backgroundColor: C.brightGreen }} />
-          <div ref={statsRef.ref} className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-            <div className="grid grid-cols-1 divide-y sm:grid-cols-3 sm:divide-x sm:divide-y-0"
-              style={{ "--tw-divide-opacity": "0.08", borderColor: "rgba(255,255,255,0.08)" } as React.CSSProperties}
-            >
-              <StatBlock num={100}  suffix="+" label="Combined Years of Experience" active={statsRef.visible} delay={0}    />
-              <StatBlock text="$Bn+"             label="Programs Supported"           active={statsRef.visible} delay={150}  />
-              <StatBlock num={6}    suffix=""  label="Core Service Capabilities"     active={statsRef.visible} delay={300}  />
-            </div>
-          </div>
-          <div className="h-[2px]" style={{ backgroundColor: C.brightGreen }} />
-        </section>
-
-        {/* ════════════════════════════════════════════════════
-            SECTION 5 — MEET THE TEAM
-           ════════════════════════════════════════════════════ */}
-        <section className="bg-white">
-          <div ref={teamRef.ref} className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-
-            <div className={`reveal mb-2 text-center ${teamRef.visible ? "visible" : ""}`}>
-              <span className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: C.brightGreen }}>
-                Our People
-              </span>
-            </div>
-            <h2
-              className={`reveal mb-14 text-center text-3xl font-bold sm:text-4xl ${teamRef.visible ? "visible" : ""}`}
-              style={{ fontFamily: "var(--font-syne)", color: C.deepNavy, transitionDelay: "0.08s" }}
-            >
-              Meet the Team
-            </h2>
-
-            <div className="mb-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {TEAM.map(({ name, initials, title }, i) => (
-                <div
-                  key={name}
-                  className={`team-card reveal flex flex-col items-center rounded-xl bg-white p-7 text-center shadow-sm ${teamRef.visible ? "visible" : ""}`}
-                  style={{ transitionDelay: `${0.1 + i * 0.1}s` }}
-                >
-                  <div className="avatar-ring mb-4">
-                    <div
-                      className="avatar-inner flex h-16 w-16 items-center justify-center rounded-full text-lg font-bold text-white"
-                      style={{ backgroundColor: C.elecBlue }}
-                    >
-                      {initials}
-                    </div>
+              <SectionEyebrow light>Our Mission</SectionEyebrow>
+              <h3 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
+                Maximise value by optimising costs and strengthening financial discipline
+              </h3>
+              <div className="mt-8 space-y-4">
+                {[
+                  "Defensible financial insight",
+                  "Governance-aligned delivery",
+                  "Forecast-focused decision support",
+                  "Capability uplift, not dependency",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-3 rounded-2xl border p-4"
+                    style={{
+                      borderColor: "rgba(255,255,255,0.10)",
+                      backgroundColor: "rgba(255,255,255,0.04)",
+                    }}
+                  >
+                    <CheckCircle2
+                      size={20}
+                      style={{ color: C.brightGreen }}
+                      className="mt-0.5 shrink-0"
+                    />
+                    <p className="text-sm leading-7 text-white/80">{item}</p>
                   </div>
-                  <p className="mb-1 text-base font-bold" style={{ fontFamily: "var(--font-syne)", color: C.deepNavy }}>
-                    {name}
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CAPABILITIES */}
+      <section>
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55 }}
+            className="mb-12"
+          >
+            <SectionEyebrow>Core Capabilities</SectionEyebrow>
+            <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <h2
+                  className="text-3xl font-bold sm:text-4xl"
+                  style={{ color: C.deepNavy }}
+                >
+                  Specialist services across the full financial lifecycle
+                </h2>
+                <p className="mt-4 max-w-3xl text-base leading-8" style={{ color: C.mutedText }}>
+                  We combine financial control, costing, commercial analysis, assurance,
+                  and transformation support to help clients stay forecast-accurate,
+                  compliant, and decision-ready.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {capabilities.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: index * 0.05 }}
+              >
+                <CapabilityCard {...item} />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* APPROACH */}
+      <section
+        className="relative overflow-hidden"
+        style={{ backgroundColor: C.deepNavy }}
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(circle at 12% 50%, rgba(77,201,47,0.12), transparent 22%), radial-gradient(circle at 85% 20%, rgba(26,109,181,0.18), transparent 25%)",
+          }}
+        />
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55 }}
+            className="mb-12"
+          >
+            <SectionEyebrow light>Delivery Approach</SectionEyebrow>
+            <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+              Governance-driven. Forecast-focused. Risk-aware.
+            </h2>
+            <p className="mt-4 max-w-3xl text-base leading-8 text-white/72">
+              OptiCost delivers a financial management model designed for complex
+              Defence environments, with strong governance, early risk visibility,
+              scalable delivery, and embedded capability uplift.
+            </p>
+          </motion.div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            {approach.map((item, index) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                className="relative rounded-[28px] border p-7"
+                style={{
+                  borderColor: "rgba(255,255,255,0.10)",
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                }}
+              >
+                <div
+                  className="mb-5 inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]"
+                  style={{
+                    backgroundColor: "rgba(77,201,47,0.16)",
+                    color: C.brightGreen,
+                  }}
+                >
+                  {item.step}
+                </div>
+                <h3 className="text-2xl font-bold text-white">{item.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-white/74">{item.text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+        <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
+      </section>
+
+      {/* DIFFERENTIATORS + SERVICES */}
+      <section>
+        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-20 lg:grid-cols-2 lg:px-8 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55 }}
+            className="rounded-[28px] border bg-white p-8 shadow-sm"
+            style={{ borderColor: "rgba(10,22,40,0.07)" }}
+          >
+            <SectionEyebrow>Why OptiCost</SectionEyebrow>
+            <h2
+              className="mt-3 text-3xl font-bold sm:text-4xl"
+              style={{ color: C.deepNavy }}
+            >
+              Differentiators that matter in complex environments
+            </h2>
+            <div className="mt-8 grid gap-4">
+              {differentiators.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-start gap-3 rounded-2xl p-4"
+                  style={{ backgroundColor: "#F8FAFC" }}
+                >
+                  <CheckCircle2
+                    size={20}
+                    style={{ color: C.brightGreen }}
+                    className="mt-0.5 shrink-0"
+                  />
+                  <p className="text-sm leading-7" style={{ color: C.bodyLight }}>
+                    {item}
                   </p>
-                  <p className="text-sm leading-snug" style={{ color: C.elecBlue }}>{title}</p>
                 </div>
               ))}
             </div>
+          </motion.div>
 
-            <div className={`reveal text-center ${teamRef.visible ? "visible" : ""}`} style={{ transitionDelay: "0.5s" }}>
-              <Link href="/people" className="pill-btn pill-btn-navy">
-                MEET THE FULL TEAM <ArrowRight size={13} />
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55, delay: 0.08 }}
+            className="rounded-[28px] border p-8 shadow-sm"
+            style={{
+              borderColor: "rgba(10,22,40,0.07)",
+              background:
+                "linear-gradient(180deg, rgba(26,109,181,0.08) 0%, rgba(255,255,255,1) 100%)",
+            }}
+          >
+            <SectionEyebrow>Services Snapshot</SectionEyebrow>
+            <h2
+              className="mt-3 text-3xl font-bold sm:text-4xl"
+              style={{ color: C.deepNavy }}
+            >
+              End-to-end financial control from initiation to closure
+            </h2>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {services.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-center gap-3 rounded-2xl border bg-white px-4 py-3"
+                  style={{ borderColor: "rgba(10,22,40,0.07)" }}
+                >
+                  <FileText size={18} style={{ color: C.elecBlue }} />
+                  <span className="text-sm font-medium" style={{ color: C.bodyLight }}>
+                    {item}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* TEAM PREVIEW */}
+      <section>
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55 }}
+            className="mb-12"
+          >
+            <SectionEyebrow>Our People</SectionEyebrow>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <h2
+                  className="text-3xl font-bold sm:text-4xl"
+                  style={{ color: C.deepNavy }}
+                >
+                  Senior consultants with real-world public sector experience
+                </h2>
+                <p className="mt-4 max-w-3xl text-base leading-8" style={{ color: C.mutedText }}>
+                  Our team combines technical depth, leadership experience, and
+                  practical delivery capability across Defence and broader government.
+                </p>
+              </div>
+
+              <Link
+                href="/people"
+                className="inline-flex items-center gap-2 text-sm font-bold"
+                style={{ color: C.elecBlue }}
+              >
+                View full team
+                <ArrowRight size={16} />
               </Link>
             </div>
-          </div>
-        </section>
+          </motion.div>
 
-        {/* ════════════════════════════════════════════════════
-            SECTION 6 — CAREERS CTA PANEL
-           ════════════════════════════════════════════════════ */}
-        <section
-          className="relative overflow-hidden"
-          style={{ backgroundColor: C.deepNavy, minHeight: "480px" }}
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            {team.map((member, index) => (
+              <motion.div
+                key={member.name}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: index * 0.06 }}
+                className="rounded-[24px] border bg-white p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1"
+                style={{ borderColor: "rgba(10,22,40,0.07)" }}
+              >
+                <div className="mb-5 flex items-center gap-4">
+                  <div
+                    className="flex h-14 w-14 items-center justify-center rounded-full text-sm font-bold text-white"
+                    style={{ backgroundColor: C.elecBlue }}
+                  >
+                    {member.initials}
+                  </div>
+                  <div>
+                    <p className="text-base font-bold" style={{ color: C.deepNavy }}>
+                      {member.name}
+                    </p>
+                    <p className="text-sm" style={{ color: C.elecBlue }}>
+                      {member.role}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-sm leading-7" style={{ color: C.mutedText }}>
+                  {member.text}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+<section
+  className="relative overflow-hidden"
+  style={{ backgroundColor: C.deepNavy }}
+>
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0"
+    style={{
+      background:
+        "radial-gradient(circle at 20% 50%, rgba(77,201,47,0.12), transparent 22%), radial-gradient(circle at 80% 40%, rgba(26,109,181,0.18), transparent 24%)",
+    }}
+  />
+
+  <div className="relative z-10 mx-auto max-w-5xl px-6 py-20 text-center lg:px-8 lg:py-24">
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.55 }}
+    >
+      <SectionEyebrow light>Trusted Partner</SectionEyebrow>
+
+      <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+        Clarity, control, and confidence in financial decision-making
+      </h2>
+
+      <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-white/74 sm:text-lg">
+        OptiCost Consulting combines deep technical expertise, senior
+        leadership, and practical delivery experience to support complex
+        programs with strong governance, accurate forecasting, and sustainable
+        capability uplift.
+      </p>
+
+      <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <Link
+          href="/contact"
+          className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-transform duration-300 hover:-translate-y-0.5"
+          style={{ backgroundColor: C.brightGreen }}
         >
-          {/* Animated diamond shapes */}
-          <div className="pointer-events-none absolute inset-0">
-            <div className="careers-diamond" />
-            <div className="careers-diamond" />
-            <div className="careers-diamond" />
-            <div className="careers-diamond" />
-            <div className="careers-diamond" />
-          </div>
+          Talk to Us
+          <ArrowRight size={18} />
+        </Link>
 
-          {/* Dark overlay */}
-          <div className="absolute inset-0" style={{ background: "rgba(10,22,40,0.55)" }} />
-
-          <div ref={ctaRef.ref} className="relative z-10 mx-auto flex max-w-3xl flex-col items-center justify-center px-6 py-28 text-center lg:px-8">
-            <h2
-              className={`reveal mb-5 text-3xl font-bold text-white sm:text-4xl lg:text-5xl ${ctaRef.visible ? "visible" : ""}`}
-              style={{ fontFamily: "var(--font-syne)" }}
-            >
-              Together, the possibilities are endless.
-            </h2>
-            <p
-              className={`reveal mb-10 text-base leading-7 sm:text-lg ${ctaRef.visible ? "visible" : ""}`}
-              style={{ color: "rgba(255,255,255,0.68)", transitionDelay: "0.12s" }}
-            >
-              Does OptiCost sound like the right fit? View our current opportunities to learn more.
-            </p>
-            <div className={`reveal ${ctaRef.visible ? "visible" : ""}`} style={{ transitionDelay: "0.24s" }}>
-              <Link href="/careers" className="pill-btn pill-btn-white">
-                VIEW CURRENT OPPORTUNITIES <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ════════════════════════════════════════════════════
-            SECTION 7 — FINAL CTA
-           ════════════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: C.elecBlue }}>
-          <div ref={finalRef.ref} className="mx-auto max-w-7xl px-6 py-20 text-center lg:px-8 lg:py-24">
-            <h2
-              className={`reveal mb-4 text-3xl font-bold text-white sm:text-4xl ${finalRef.visible ? "visible" : ""}`}
-              style={{ fontFamily: "var(--font-syne)" }}
-            >
-              Ready to optimise your program costs?
-            </h2>
-            <p
-              className={`reveal mx-auto mb-10 max-w-xl text-base leading-7 sm:text-lg ${finalRef.visible ? "visible" : ""}`}
-              style={{ color: "rgba(255,255,255,0.78)", transitionDelay: "0.1s" }}
-            >
-              Get in touch with our team of Defence and government finance specialists.
-            </p>
-            <div className={`reveal ${finalRef.visible ? "visible" : ""}`} style={{ transitionDelay: "0.2s" }}>
-              <Link href="/contact" className="pill-btn pill-btn-white">
-                CONTACT US <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-        </section>
-
+        <Link
+          href="/services"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3.5 text-sm font-bold transition-colors duration-300 hover:bg-white/5"
+          style={{
+            borderColor: "rgba(255,255,255,0.16)",
+            color: C.white,
+          }}
+        >
+          Explore Services
+        </Link>
       </div>
-    </>
+    </motion.div>
+  </div>
+
+  <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
+</section>
+    </div>
   );
 }
 
-/* ── StatBlock ───────────────────────────────────────────────────────────── */
+/* ----------------------------- helpers ----------------------------- */
 
-function StatBlock({
-  num, suffix, text, label, active, delay,
+function SectionEyebrow({
+  children,
+  light = false,
 }: {
-  num?:    number;
-  suffix?: string;
-  text?:   string;
-  label:   string;
-  active:  boolean;
-  delay:   number;
+  children: React.ReactNode;
+  light?: boolean;
 }) {
-  const counted = useCountUp(num ?? 0, active);
-  const display = text ?? `${counted}${suffix ?? ""}`;
   return (
-    <div
-      className="flex flex-col items-center py-12 text-center"
+    <span
+      className="inline-block text-xs font-bold uppercase tracking-[0.22em]"
+      style={{ color: light ? C.brightGreen : C.elecBlue }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function StatCard({
+  value,
+  label,
+}: {
+  value: string;
+  label: string;
+}) {
+  return (
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2 }}
+      className="rounded-2xl border px-5 py-4"
       style={{
-        opacity:    active ? 1 : 0,
-        transform:  active ? "translateY(0)" : "translateY(20px)",
-        transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+        borderColor: "rgba(255,255,255,0.10)",
+        backgroundColor: "rgba(255,255,255,0.05)",
       }}
     >
-      <span
-        className="mb-3 text-5xl font-extrabold text-white sm:text-6xl"
-        style={{ fontFamily: "var(--font-syne)" }}
+      <p className="text-xl font-bold text-white">{value}</p>
+      <p className="mt-1 text-sm leading-6 text-white/68">{label}</p>
+    </motion.div>
+  );
+}
+
+function SlideMiniCard({
+  icon: Icon,
+  title,
+  text,
+}: {
+  icon: React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>;
+  title: string;
+  text: string;
+}) {
+  return (
+    <div
+      className="rounded-2xl border p-4"
+      style={{
+        borderColor: "rgba(255,255,255,0.10)",
+        backgroundColor: "rgba(255,255,255,0.04)",
+      }}
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className="rounded-xl p-2"
+          style={{ backgroundColor: "rgba(77,201,47,0.14)" }}
+        >
+          <Icon size={18} style={{ color: C.brightGreen }} />
+        </div>
+        <div>
+          <p className="text-sm font-bold text-white">{title}</p>
+          <p className="mt-1 text-sm leading-6 text-white/68">{text}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CapabilityCard({
+  icon: Icon,
+  title,
+  text,
+}: {
+  icon: React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>;
+  title: string;
+  text: string;
+}) {
+  return (
+    <div
+      className="group h-full rounded-[26px] border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      style={{ borderColor: "rgba(10,22,40,0.07)" }}
+    >
+      <div
+        className="mb-5 inline-flex rounded-2xl p-3 transition-transform duration-300 group-hover:scale-105"
+        style={{ backgroundColor: "rgba(26,109,181,0.08)" }}
       >
-        {display}
-      </span>
-      <span className="stat-label-shimmer text-xs font-bold uppercase tracking-[0.18em]" style={{ color: C.brightGreen }}>
-        {label}
-      </span>
+        <Icon size={22} style={{ color: C.elecBlue }} />
+      </div>
+      <h3 className="text-xl font-bold leading-snug" style={{ color: C.deepNavy }}>
+        {title}
+      </h3>
+      <p className="mt-4 text-sm leading-7" style={{ color: C.mutedText }}>
+        {text}
+      </p>
     </div>
   );
 }

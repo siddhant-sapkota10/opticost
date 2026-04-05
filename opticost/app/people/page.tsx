@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 export const metadata = {
@@ -8,22 +9,22 @@ export const metadata = {
 };
 
 const C = {
-  deepNavy:    "#0A1628",
-  elecBlue:    "#1A6DB5",
+  deepNavy: "#0A1628",
+  elecBlue: "#1A6DB5",
   brightGreen: "#4DC92F",
-  brandBg:     "#F5F7FA",
-  bodyLight:   "#1A1A1A",
+  brandBg: "#F5F7FA",
+  bodyLight: "#1A1A1A",
+  mutedText: "#556070",
+  white: "#FFFFFF",
 } as const;
-
-/* ── Team data ────────────────────────────────────────────────────────────── */
 
 const team = [
   {
-    name:     "Shiva Sapkota",
+    name: "Shiva Sapkota",
     initials: "SS",
-    title:    "Principal Consultant (Commercial Finance)",
-    bio:      "A senior commercial finance leader with 20+ years of experience across Defence, ATO, NSW Transport, and Treasury.",
-    bullets:  [
+    title: "Principal Consultant (Commercial Finance)",
+    bio: "A senior commercial finance leader with 20+ years of experience across Defence, ATO, NSW Transport, and Treasury.",
+    bullets: [
       "Expert in costing, pricing, and financial modelling for multi-billion-dollar programs",
       "Proven leadership in commercial reform and operating model transformation",
       "Deep expertise in Defence tools: ACEIT, CCT, ClearCost, SAP, Oracle",
@@ -31,11 +32,11 @@ const team = [
     tagline: "Leads complex procurement and capability costing engagements.",
   },
   {
-    name:     "Ramesh Pudasaini",
+    name: "Ramesh Pudasaini",
     initials: "RP",
-    title:    "Principal Consultant (Financial Management)",
-    bio:      "A highly experienced financial management specialist with over 25 years across public sector and Big4 consulting.",
-    bullets:  [
+    title: "Principal Consultant (Financial Management)",
+    bio: "A highly experienced financial management specialist with over 25 years across public sector and Big4 consulting.",
+    bullets: [
       "Expertise in budgeting, audit, and financial operations",
       "Strong track record supporting Defence and Home Affairs programs",
       "Experience in end-to-end financial management and governance",
@@ -43,11 +44,11 @@ const team = [
     tagline: "Drives financial discipline and operational excellence.",
   },
   {
-    name:     "Vijay Kansal",
+    name: "Vijay Kansal",
     initials: "VK",
-    title:    "Senior Consultant (Systems & Process)",
-    bio:      "A transformation-focused finance professional with deep experience in systems and process optimisation.",
-    bullets:  [
+    title: "Senior Consultant (Systems & Process)",
+    bio: "A transformation-focused finance professional with deep experience in systems and process optimisation.",
+    bullets: [
       "Specialist in business transformation and finance operations",
       "Strong capability in ERP systems and process improvement",
       "Experience across APS and private sector",
@@ -55,11 +56,11 @@ const team = [
     tagline: "Enhances efficiency and financial system performance.",
   },
   {
-    name:     "Anuj Joshi",
+    name: "Anuj Joshi",
     initials: "AJ",
-    title:    "Senior Consultant (Audit & Compliance)",
-    bio:      "A strategic finance and audit professional with experience across ANAO, NACC, and international organisations.",
-    bullets:  [
+    title: "Senior Consultant (Audit & Compliance)",
+    bio: "A strategic finance and audit professional with experience across ANAO, NACC, and international organisations.",
+    bullets: [
       "Expertise in audit, compliance, and PGPA framework",
       "Strong experience in executive financial reporting and analysis",
       "Proven leadership in complex audit engagements",
@@ -68,74 +69,129 @@ const team = [
   },
 ] as const;
 
-/* ── Page ─────────────────────────────────────────────────────────────────── */
-
 export default function PeoplePage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: C.brandBg, color: C.bodyLight }}>
+    <div
+      className="min-h-screen overflow-x-hidden"
+      style={{ backgroundColor: C.brandBg, color: C.bodyLight }}
+    >
       <Navbar />
 
-      {/* ══════════════════════════════
-          1. HERO
-         ══════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ backgroundColor: C.deepNavy }}>
+      {/* HERO */}
+      <section
+        className="relative isolate overflow-hidden pt-24"
+        style={{ backgroundColor: C.deepNavy }}
+      >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
+          className="absolute inset-0"
           style={{
-            background:
-              "radial-gradient(ellipse 60% 70% at 65% 50%, rgba(26,109,181,0.18) 0%, transparent 70%)",
+            background: `
+              radial-gradient(circle at 18% 25%, rgba(77,201,47,0.15), transparent 28%),
+              radial-gradient(circle at 82% 20%, rgba(26,109,181,0.22), transparent 30%),
+              radial-gradient(circle at 60% 75%, rgba(255,255,255,0.05), transparent 25%)
+            `,
           }}
         />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32">
-          <div className="max-w-2xl">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-20 top-20 h-72 w-72 rounded-full blur-3xl"
+          style={{ backgroundColor: "rgba(77, 201, 47, 0.10)" }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full blur-3xl"
+          style={{ backgroundColor: "rgba(26, 109, 181, 0.18)" }}
+        />
+
+        <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+          <div className="max-w-3xl">
             <div
-              className="mb-6 h-1 w-14 rounded-full"
-              style={{ backgroundColor: C.brightGreen }}
-            />
-            <h1
-              className="mb-5 text-4xl font-bold tracking-tight sm:text-5xl"
-              style={{ color: "#FFFFFF" }}
+              className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em]"
+              style={{
+                borderColor: "rgba(255,255,255,0.14)",
+                backgroundColor: "rgba(255,255,255,0.05)",
+                color: C.brightGreen,
+              }}
             >
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ backgroundColor: C.brightGreen }}
+              />
               Our People
+            </div>
+
+            <h1 className="max-w-3xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+              Senior consultants with real-world public sector experience
             </h1>
-            <p className="text-lg sm:text-xl" style={{ color: "rgba(255,255,255,0.72)" }}>
-              Senior Defence and public sector finance professionals with decades
-              of real-world experience.
+
+            <p
+              className="mt-6 max-w-2xl text-base leading-8 sm:text-lg"
+              style={{ color: "rgba(255,255,255,0.76)" }}
+            >
+              Our team brings deep expertise across Defence, government, audit,
+              commercial finance, financial management, and transformation —
+              delivering practical advice grounded in real-world experience.
             </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-transform duration-300 hover:-translate-y-0.5"
+                style={{ backgroundColor: C.brightGreen }}
+              >
+                Get in Touch
+                <ArrowRight size={18} />
+              </Link>
+
+              <Link
+                href="/services"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3.5 text-sm font-bold transition-colors duration-300"
+                style={{
+                  borderColor: "rgba(255,255,255,0.18)",
+                  color: C.white,
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                }}
+              >
+                Explore Services
+              </Link>
+            </div>
           </div>
         </div>
 
         <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
       </section>
 
-      {/* ══════════════════════════════
-          2. TEAM CARDS
-         ══════════════════════════════ */}
-      <section style={{ backgroundColor: C.brandBg }}>
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-
-          <div className="mb-14">
+      {/* TEAM CARDS */}
+      <section>
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+          <div className="mb-12">
             <span
-              className="mb-3 inline-block text-xs font-bold uppercase tracking-widest"
-              style={{ color: C.brightGreen }}
+              className="inline-block text-xs font-bold uppercase tracking-[0.22em]"
+              style={{ color: C.elecBlue }}
             >
               The Team
             </span>
+
             <h2
-              className="text-3xl font-bold sm:text-4xl"
+              className="mt-3 text-3xl font-bold sm:text-4xl"
               style={{ color: C.deepNavy }}
             >
-              Meet Our Consultants
+              Meet our consultants
             </h2>
-            <div
-              className="mt-4 h-1 w-12 rounded-full"
-              style={{ backgroundColor: C.elecBlue }}
-            />
+
+            <p
+              className="mt-4 max-w-3xl text-base leading-8"
+              style={{ color: C.mutedText }}
+            >
+              OptiCost Consulting is built around senior practitioners who bring
+              commercial judgement, technical depth, and practical delivery
+              capability across complex public sector and Defence environments.
+            </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:gap-8">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-2">
             {team.map((member) => (
               <PersonCard key={member.name} {...member} />
             ))}
@@ -143,33 +199,43 @@ export default function PeoplePage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════
-          3. CALL TO ACTION
-         ══════════════════════════════ */}
-      <section style={{ backgroundColor: C.deepNavy }}>
-        <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
+      {/* CTA */}
+      <section
+        className="relative overflow-hidden"
+        style={{ backgroundColor: C.deepNavy }}
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(circle at 20% 50%, rgba(77,201,47,0.12), transparent 22%), radial-gradient(circle at 80% 40%, rgba(26,109,181,0.18), transparent 24%)",
+          }}
+        />
 
-        <div className="mx-auto max-w-7xl px-6 py-20 text-center lg:px-8 lg:py-28">
-          <h2
-            className="mb-4 text-3xl font-bold sm:text-4xl"
-            style={{ color: "#FFFFFF" }}
-          >
-            Work with Australia&rsquo;s leading Defence finance specialists.
+        <div className="relative mx-auto max-w-5xl px-6 py-20 text-center lg:px-8 lg:py-24">
+          <h2 className="text-3xl font-bold text-white sm:text-4xl">
+            Work with Australia’s leading Defence finance specialists
           </h2>
           <p
-            className="mx-auto mb-10 max-w-xl text-lg"
-            style={{ color: "rgba(255,255,255,0.68)" }}
+            className="mx-auto mt-5 max-w-2xl text-base leading-8 sm:text-lg"
+            style={{ color: "rgba(255,255,255,0.72)" }}
           >
-            Our team brings unmatched depth across government, Defence, and
-            public sector finance.
+            Our team combines technical expertise, leadership experience, and
+            strong public sector understanding to support high-stakes programs
+            with clarity and confidence.
           </p>
-          <Link
-            href="/contact"
-            className="inline-block rounded-md px-8 py-4 text-base font-bold text-white shadow-md transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            style={{ backgroundColor: C.brightGreen }}
-          >
-            Get in Touch
-          </Link>
+
+          <div className="mt-8">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-transform duration-300 hover:-translate-y-0.5"
+              style={{ backgroundColor: C.brightGreen }}
+            >
+              Contact Us
+              <ArrowRight size={18} />
+            </Link>
+          </div>
         </div>
 
         <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
@@ -177,8 +243,6 @@ export default function PeoplePage() {
     </div>
   );
 }
-
-/* ── PersonCard ───────────────────────────────────────────────────────────── */
 
 function PersonCard({
   name,
@@ -188,19 +252,18 @@ function PersonCard({
   bullets,
   tagline,
 }: {
-  name:     string;
+  name: string;
   initials: string;
-  title:    string;
-  bio:      string;
-  bullets:  readonly string[];
-  tagline:  string;
+  title: string;
+  bio: string;
+  bullets: readonly string[];
+  tagline: string;
 }) {
   return (
     <div
-      className="flex flex-col rounded-xl bg-white p-7 shadow-sm transition-shadow hover:shadow-md"
-      style={{ borderTop: `4px solid ${C.brightGreen}` }}
+      className="group h-full rounded-[26px] border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      style={{ borderColor: "rgba(10,22,40,0.07)" }}
     >
-      {/* Avatar + name/title row */}
       <div className="mb-5 flex items-center gap-4">
         <div
           className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full text-base font-bold text-white"
@@ -224,15 +287,10 @@ function PersonCard({
         </div>
       </div>
 
-      {/* Bio */}
-      <p
-        className="mb-5 text-sm leading-7"
-        style={{ color: C.bodyLight }}
-      >
+      <p className="mb-5 text-sm leading-7" style={{ color: C.bodyLight }}>
         {bio}
       </p>
 
-      {/* Bullets */}
       <ul className="mb-6 flex-1 space-y-2.5">
         {bullets.map((b) => (
           <li
@@ -249,13 +307,11 @@ function PersonCard({
         ))}
       </ul>
 
-      {/* Divider */}
       <div
         className="mb-4 h-px w-full"
         style={{ backgroundColor: "rgba(0,0,0,0.07)" }}
       />
 
-      {/* Tagline */}
       <p
         className="text-sm font-medium italic"
         style={{ color: C.brightGreen }}
