@@ -1,0 +1,315 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F5F7FA;
+  --foreground: #1A1A1A;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-syne);
+
+  --color-deep-navy:    #0A1628;
+  --color-elec-blue:    #1A6DB5;
+  --color-bright-green: #4DC92F;
+  --color-brand-bg:     #F5F7FA;
+  --color-body-light:   #1A1A1A;
+}
+
+/* ── Base ───────────────────────────────────────────────────── */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  scroll-behavior: smooth;
+}
+
+/* ── Custom scrollbar ───────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0A1628; }
+::-webkit-scrollbar-thumb { background: #4DC92F; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3ab522; }
+* { scrollbar-color: #4DC92F #0A1628; scrollbar-width: thin; }
+
+/* ── Scroll progress ────────────────────────────────────────── */
+
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 100%;
+  background: #4DC92F;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.08s linear;
+  z-index: 9999;
+  box-shadow: 0 0 8px rgba(77,201,47,0.7);
+}
+
+/* ── Scroll reveal ──────────────────────────────────────────── */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+/* ── Slide hero ─────────────────────────────────────────────── */
+
+.slide-content-enter .slide-headline {
+  opacity: 0;
+  transform: translateY(28px);
+  animation: slideUp 0.55s ease forwards;
+}
+.slide-content-enter .slide-sub {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUp 0.55s ease 0.2s forwards;
+}
+.slide-content-enter .slide-btn {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: slideUp 0.55s ease 0.4s forwards;
+}
+@keyframes slideUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Hero slide BG animations ───────────────────────────────── */
+
+/* Slide 1 — radial pulse */
+.slide-bg-1 {
+  background: radial-gradient(ellipse 80% 70% at 65% 45%, #1A6DB5 0%, #0A1628 65%);
+  background-size: 150% 150%;
+  animation: bgPulse1 8s ease-in-out infinite alternate;
+}
+@keyframes bgPulse1 {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+
+/* Slide 2 — geometric diamond CSS shapes */
+.slide-bg-2 { background: #0A1628; }
+.slide-bg-2 .geo-wrap {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.geo-diamond {
+  position: absolute;
+  border: 1px solid rgba(26,109,181,0.18);
+  transform: rotate(45deg);
+  animation: geoFloat 12s ease-in-out infinite;
+}
+.geo-diamond:nth-child(1) { width: 320px; height: 320px; top: -80px; right: 8%; animation-delay: 0s; }
+.geo-diamond:nth-child(2) { width: 200px; height: 200px; top: 20%; right: 22%; animation-delay: -3s; animation-duration: 9s; }
+.geo-diamond:nth-child(3) { width: 480px; height: 480px; bottom: -120px; right: -5%; animation-delay: -6s; animation-duration: 15s; }
+.geo-diamond:nth-child(4) { width: 150px; height: 150px; top: 55%; left: 5%;  animation-delay: -4s; animation-duration: 10s; }
+@keyframes geoFloat {
+  0%,100% { transform: rotate(45deg) scale(1);    opacity: 1; }
+  50%      { transform: rotate(45deg) scale(1.06); opacity: 0.6; }
+}
+
+/* Slide 3 — green-tinted drifting gradient */
+.slide-bg-3 {
+  background: linear-gradient(135deg, #0A1628 0%, #061a0a 40%, #0A1628 70%, #091520 100%);
+  background-size: 300% 300%;
+  animation: bgDrift3 10s ease-in-out infinite alternate;
+}
+@keyframes bgDrift3 {
+  from { background-position: 0% 0%; }
+  to   { background-position: 100% 100%; }
+}
+
+/* ── Split panel geo lines ──────────────────────────────────── */
+
+.geo-lines {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.geo-line {
+  position: absolute;
+  border: 1px solid rgba(255,255,255,0.05);
+  transform: rotate(45deg);
+  animation: linePulse 8s ease-in-out infinite;
+}
+.geo-line:nth-child(1) { width: 240px; height: 240px; top: -60px; right: 10%; }
+.geo-line:nth-child(2) { width: 360px; height: 360px; top: 20%;  right: -5%; animation-delay: -2s; }
+.geo-line:nth-child(3) { width: 180px; height: 180px; bottom: 10%; left: 5%; animation-delay: -4s; }
+@keyframes linePulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* ── Capability rows ────────────────────────────────────────── */
+
+.cap-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(10,22,40,0.1);
+  cursor: pointer;
+  transition: background-color 0.2s ease, padding-left 0.2s ease;
+  text-decoration: none;
+}
+.cap-row:first-of-type { border-top: 1px solid rgba(10,22,40,0.1); }
+.cap-row:hover { background-color: rgba(26,109,181,0.05); padding-left: 2rem; }
+.cap-row .cap-arrow {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid #4DC92F;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  flex-shrink: 0;
+}
+.cap-row:hover .cap-arrow {
+  transform: translateX(5px);
+  background-color: #4DC92F;
+}
+.cap-row:hover .cap-row-title { color: #1A6DB5; }
+.cap-row-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0A1628;
+  transition: color 0.2s ease;
+}
+
+/* ── Stats shimmer ──────────────────────────────────────────── */
+
+.stat-label-shimmer {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+.stat-label-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  animation: shimmer 3.5s ease-in-out infinite;
+}
+@keyframes shimmer { 0% { left: -120%; } 60%,100% { left: 180%; } }
+
+/* ── Team cards ─────────────────────────────────────────────── */
+
+.team-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  border-top: 3px solid transparent;
+}
+.team-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 36px rgba(10,22,40,0.1);
+  border-top-color: #4DC92F;
+}
+.avatar-ring { position: relative; display: inline-block; }
+.avatar-ring::before {
+  content: '';
+  position: absolute; inset: -3px;
+  border-radius: 50%;
+  background: conic-gradient(#4DC92F, #1A6DB5, #0A1628, #4DC92F);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: spinRing 2.5s linear infinite;
+}
+.team-card:hover .avatar-ring::before { opacity: 1; }
+@keyframes spinRing { to { transform: rotate(360deg); } }
+.avatar-inner { position: relative; z-index: 1; }
+
+/* ── Careers CTA diamond bg ─────────────────────────────────── */
+
+.careers-diamond {
+  position: absolute;
+  border: 1px solid rgba(77,201,47,0.12);
+  transform: rotate(45deg);
+  animation: careersDiamond 10s ease-in-out infinite;
+}
+.careers-diamond:nth-child(1) { width: 260px; height: 260px; top: 50%; left: 50%; margin: -130px; animation-delay: 0s; }
+.careers-diamond:nth-child(2) { width: 400px; height: 400px; top: 50%; left: 50%; margin: -200px; animation-delay: -2s; animation-duration: 14s; }
+.careers-diamond:nth-child(3) { width: 560px; height: 560px; top: 50%; left: 50%; margin: -280px; animation-delay: -4s; animation-duration: 18s; }
+.careers-diamond:nth-child(4) { width: 100px; height: 100px; top: 15%; left: 15%; animation-delay: -1s; animation-duration: 8s; }
+.careers-diamond:nth-child(5) { width: 80px;  height: 80px;  bottom: 15%; right: 12%; animation-delay: -3s; animation-duration: 7s; }
+@keyframes careersDiamond {
+  0%,100% { transform: rotate(45deg) scale(1);    opacity: 1; }
+  50%      { transform: rotate(45deg) scale(1.08); opacity: 0.5; }
+}
+
+/* ── Pill buttons ───────────────────────────────────────────── */
+
+.pill-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  padding: 0.65rem 1.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+.pill-btn-white {
+  color: #FFFFFF;
+  border-color: rgba(255,255,255,0.6);
+}
+.pill-btn-white:hover { background-color: rgba(255,255,255,0.12); }
+.pill-btn-navy {
+  color: #0A1628;
+  border-color: #0A1628;
+}
+.pill-btn-navy:hover { background-color: rgba(10,22,40,0.07); }
+
+/* ── Slide dots ─────────────────────────────────────────────── */
+
+.slide-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  transition: background 0.3s ease, width 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+.slide-dot.active {
+  background: #4DC92F;
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* ── Arrow nav circles ──────────────────────────────────────── */
+
+.slide-arrow {
+  display: flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.35);
+  color: white;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
+  background: transparent;
+  flex-shrink: 0;
+}
+.slide-arrow:hover { border-color: #4DC92F; background-color: rgba(77,201,47,0.12); }
+
+/* ── Reduced motion ─────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal, .reveal-left { opacity: 1 !important; transform: none !important; }
+  .slide-content-enter .slide-headline,
+  .slide-content-enter .slide-sub,
+  .slide-content-enter .slide-btn { opacity: 1 !important; transform: none !important; animation: none !important; }
+}
