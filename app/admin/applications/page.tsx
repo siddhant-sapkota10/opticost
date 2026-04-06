@@ -17,7 +17,7 @@ export default async function AdminApplicationsPage({
   const { data, error } = await supabase
     .from("applications")
     .select(
-      "id, job_id, job_title, first_name, last_name, email, phone, cover_letter, resume_url, created_at, status, notes"
+      "id, job_id, job_title, first_name, last_name, email, phone, cover_letter, resume_url, created_at, status, notes, archived"
     )
     .order("created_at", { ascending: false });
 
@@ -58,6 +58,7 @@ export default async function AdminApplicationsPage({
       created_at: app.created_at as string,
       status: (app.status as string) ?? "pending",
       notes: (app.notes as string | null) ?? null,
+      archived: Boolean(app.archived),
     });
   }
 
@@ -69,11 +70,13 @@ export default async function AdminApplicationsPage({
     ? (groupMap.get(filterJobId)?.job_title ?? null)
     : null;
 
+  const activeApplications = applications.filter((app) => !app.archived);
+
   const counts = {
-    total: applications.length,
-    pending: applications.filter((a) => !a.status || a.status === "pending").length,
-    shortlisted: applications.filter((a) => a.status === "shortlisted").length,
-    rejected: applications.filter((a) => a.status === "rejected").length,
+    total: activeApplications.length,
+    pending: activeApplications.filter((app) => !app.status || app.status === "pending").length,
+    shortlisted: activeApplications.filter((app) => app.status === "shortlisted").length,
+    rejected: activeApplications.filter((app) => app.status === "rejected").length,
   };
 
   return (

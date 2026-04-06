@@ -3,7 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { ChevronDown, ChevronUp, ExternalLink, FileText, Mail, X } from "lucide-react";
+import {
+  Archive,
+  ArchiveRestore,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  FileText,
+  Mail,
+  Trash2,
+  X,
+} from "lucide-react";
 
 export type Applicant = {
   id: string;
@@ -16,6 +26,7 @@ export type Applicant = {
   created_at: string;
   status: string;
   notes: string | null;
+  archived: boolean;
 };
 
 export type JobGroup = {
@@ -28,11 +39,50 @@ const STATUS_OPTIONS = ["pending", "reviewed", "shortlisted", "rejected"] as con
 type Status = (typeof STATUS_OPTIONS)[number];
 
 const STATUS_STYLES: Record<Status, { bg: string; color: string }> = {
-  pending:     { bg: "rgba(26,109,181,0.10)", color: "#1A6DB5" },
-  reviewed:    { bg: "rgba(10,22,40,0.08)",   color: "rgba(26,26,26,0.55)" },
-  shortlisted: { bg: "rgba(77,201,47,0.12)",  color: "#2d8a1a" },
-  rejected:    { bg: "rgba(220,38,38,0.09)",  color: "#DC2626" },
+  pending: { bg: "rgba(26,109,181,0.10)", color: "#1A6DB5" },
+  reviewed: { bg: "rgba(10,22,40,0.08)", color: "rgba(26,26,26,0.55)" },
+  shortlisted: { bg: "rgba(77,201,47,0.12)", color: "#2d8a1a" },
+  rejected: { bg: "rgba(220,38,38,0.09)", color: "#DC2626" },
 };
+
+type StatusFilter = "all" | "pending" | "shortlisted" | "rejected";
+
+const STAT_CONFIG: {
+  key: StatusFilter;
+  label: string;
+  activeColor: string;
+  activeBg: string;
+  activeBorder: string;
+}[] = [
+  {
+    key: "all",
+    label: "Total",
+    activeColor: "#0A1628",
+    activeBg: "rgba(10,22,40,0.07)",
+    activeBorder: "rgba(10,22,40,0.25)",
+  },
+  {
+    key: "pending",
+    label: "Pending",
+    activeColor: "#1A6DB5",
+    activeBg: "rgba(26,109,181,0.10)",
+    activeBorder: "rgba(26,109,181,0.35)",
+  },
+  {
+    key: "shortlisted",
+    label: "Shortlisted",
+    activeColor: "#2d8a1a",
+    activeBg: "rgba(77,201,47,0.12)",
+    activeBorder: "rgba(77,201,47,0.4)",
+  },
+  {
+    key: "rejected",
+    label: "Rejected",
+    activeColor: "#DC2626",
+    activeBg: "rgba(220,38,38,0.08)",
+    activeBorder: "rgba(220,38,38,0.3)",
+  },
+];
 
 function statusStyle(s: string) {
   return STATUS_STYLES[s as Status] ?? STATUS_STYLES.pending;
@@ -46,25 +96,30 @@ function formatDate(ts: string) {
   });
 }
 
-// ─── Applicant card ──────────────────────────────────────────────────────────
-
 function ApplicantCard({
   applicant,
   jobTitle,
+  busy,
+  onArchive,
+  onRestore,
+  onDelete,
 }: {
   applicant: Applicant;
   jobTitle: string;
+  busy: boolean;
+  onArchive: () => void;
+  onRestore: () => void;
+  onDelete: () => void;
 }) {
   const [status, setStatus] = useState(applicant.status || "pending");
   const [statusSaving, setStatusSaving] = useState(false);
   const [statusError, setStatusError] = useState<string | null>(null);
   const [coverOpen, setCoverOpen] = useState(false);
-
-  // Notes state
   const [note, setNote] = useState(applicant.notes ?? "");
   const [noteSaving, setNoteSaving] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
   const [noteError, setNoteError] = useState<string | null>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   async function handleStatusChange(next: string) {
     setStatusSaving(true);
@@ -82,6 +137,7 @@ function ApplicantCard({
       setStatus(prev);
       setStatusError("Failed to save.");
     }
+
     setStatusSaving(false);
   }
 
@@ -102,6 +158,7 @@ function ApplicantCard({
       setNoteSaved(true);
       setTimeout(() => setNoteSaved(false), 2500);
     }
+
     setNoteSaving(false);
   }
 
@@ -109,22 +166,32 @@ function ApplicantCard({
     `Re: Your application for ${jobTitle} at OptiCost`
   );
   const mailtoHref = `mailto:${applicant.email}?subject=${emailSubject}`;
-
   const st = statusStyle(status);
 
   return (
     <div
       className="rounded-2xl border bg-white shadow-sm"
-      style={{ borderColor: "rgba(10,22,40,0.07)" }}
+      style={{
+        borderColor: applicant.archived ? "rgba(10,22,40,0.05)" : "rgba(10,22,40,0.07)",
+        opacity: applicant.archived ? 0.78 : 1,
+      }}
     >
-      {/* Header: name + contact + status */}
       <div className="flex flex-wrap items-start justify-between gap-3 px-5 py-4">
         <div className="min-w-0">
-          <p className="text-sm font-bold" style={{ color: "#0A1628" }}>
-            {applicant.first_name} {applicant.last_name}
-          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-sm font-bold" style={{ color: "#0A1628" }}>
+              {applicant.first_name} {applicant.last_name}
+            </p>
+            {applicant.archived && (
+              <span
+                className="rounded-full px-2 py-0.5 text-[11px] font-bold"
+                style={{ backgroundColor: "rgba(0,0,0,0.06)", color: "rgba(26,26,26,0.45)" }}
+              >
+                Archived
+              </span>
+            )}
+          </div>
 
-          {/* Email row with Send Email button */}
           <div className="mt-0.5 flex flex-wrap items-center gap-2">
             <span className="text-xs" style={{ color: "rgba(26,26,26,0.55)" }}>
               {applicant.email}
@@ -147,19 +214,18 @@ function ApplicantCard({
           </p>
         </div>
 
-        {/* Status selector */}
         <div className="flex flex-col items-end gap-1">
           <div className="relative">
             <select
               value={status}
-              disabled={statusSaving}
+              disabled={statusSaving || applicant.archived}
               onChange={(e) => handleStatusChange(e.target.value)}
               className="appearance-none rounded-full py-1 pl-3 pr-7 text-xs font-semibold outline-none transition disabled:opacity-60"
               style={{
                 backgroundColor: st.bg,
                 color: st.color,
                 border: "none",
-                cursor: "pointer",
+                cursor: applicant.archived ? "not-allowed" : "pointer",
               }}
             >
               {STATUS_OPTIONS.map((s) => (
@@ -192,12 +258,10 @@ function ApplicantCard({
         </div>
       </div>
 
-      {/* Resume, cover letter, notes */}
       <div
         className="border-t px-5 pb-5 pt-3"
         style={{ borderColor: "rgba(0,0,0,0.05)" }}
       >
-        {/* Resume + cover letter buttons */}
         <div className="flex flex-wrap gap-3">
           {applicant.resume_url ? (
             <a
@@ -234,7 +298,7 @@ function ApplicantCard({
 
         {coverOpen && applicant.cover_letter && (
           <div
-            className="mt-3 rounded-xl p-4 text-xs leading-relaxed whitespace-pre-wrap"
+            className="mt-3 rounded-xl p-4 whitespace-pre-wrap text-xs leading-relaxed"
             style={{
               backgroundColor: "#F8FAFC",
               color: "rgba(26,26,26,0.75)",
@@ -245,13 +309,21 @@ function ApplicantCard({
           </div>
         )}
 
-        {/* Private notes */}
         <div className="mt-4">
           <label
             className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider"
             style={{ color: "rgba(26,26,26,0.45)" }}
           >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
@@ -261,24 +333,25 @@ function ApplicantCard({
             rows={3}
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Add internal notes about this applicant…"
-            className="w-full resize-none rounded-xl border px-3 py-2.5 text-xs leading-relaxed outline-none transition focus:ring-2"
+            placeholder="Add internal notes about this applicant..."
+            disabled={applicant.archived}
+            className="w-full resize-none rounded-xl border px-3 py-2.5 text-xs leading-relaxed outline-none transition focus:ring-2 disabled:opacity-60"
             style={{
               borderColor: "rgba(10,22,40,0.10)",
               backgroundColor: "#FAFBFC",
               color: "#1A1A1A",
-              // @ts-ignore
+              // @ts-expect-error CSS custom property
               "--tw-ring-color": "rgba(26,109,181,0.12)",
             }}
           />
-          <div className="mt-2 flex items-center gap-3">
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             <button
               onClick={handleSaveNote}
-              disabled={noteSaving}
+              disabled={noteSaving || applicant.archived}
               className="rounded-lg px-3 py-1.5 text-xs font-bold text-white transition-opacity disabled:opacity-60"
               style={{ backgroundColor: "#0A1628" }}
             >
-              {noteSaving ? "Saving…" : "Save note"}
+              {noteSaving ? "Saving..." : "Save note"}
             </button>
             {noteSaved && (
               <span className="text-xs font-medium" style={{ color: "#2d8a1a" }}>
@@ -292,25 +365,98 @@ function ApplicantCard({
             )}
           </div>
         </div>
+
+        <div
+          className="mt-4 flex flex-wrap items-center gap-2 border-t pt-4"
+          style={{ borderColor: "rgba(10,22,40,0.06)" }}
+        >
+          {applicant.archived ? (
+            confirmingDelete ? (
+              <>
+                <span className="text-xs font-medium" style={{ color: "rgba(26,26,26,0.55)" }}>
+                  Delete permanently?
+                </span>
+                <button
+                  onClick={() => {
+                    setConfirmingDelete(false);
+                    onDelete();
+                  }}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold text-white transition-opacity disabled:opacity-50"
+                  style={{ backgroundColor: "#DC2626" }}
+                >
+                  <Trash2 size={11} />
+                  Delete
+                </button>
+                <button
+                  onClick={() => setConfirmingDelete(false)}
+                  disabled={busy}
+                  className="inline-flex items-center rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-gray-50 disabled:opacity-50"
+                  style={{ borderColor: "rgba(10,22,40,0.12)", color: "rgba(26,26,26,0.6)" }}
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={onRestore}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-gray-50 disabled:opacity-50"
+                  style={{ borderColor: "rgba(10,22,40,0.12)", color: "rgba(26,26,26,0.6)" }}
+                >
+                  <ArchiveRestore size={12} />
+                  Restore
+                </button>
+                <button
+                  onClick={() => setConfirmingDelete(true)}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                  style={{ borderColor: "rgba(10,22,40,0.12)", color: "rgba(26,26,26,0.45)" }}
+                >
+                  <Trash2 size={12} />
+                  Delete
+                </button>
+              </>
+            )
+          ) : (
+            <button
+              onClick={onArchive}
+              disabled={busy}
+              className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+              style={{ borderColor: "rgba(10,22,40,0.12)", color: "rgba(26,26,26,0.45)" }}
+            >
+              <Archive size={12} />
+              Archive application
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── Job group (expand/collapse) ─────────────────────────────────────────────
-
-function JobGroup({ group }: { group: JobGroup }) {
+function JobGroup({
+  group,
+  busyIds,
+  onArchive,
+  onRestore,
+  onDelete,
+}: {
+  group: JobGroup;
+  busyIds: Set<string>;
+  onArchive: (id: string) => void;
+  onRestore: (id: string) => void;
+  onDelete: (id: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const count = group.applicants.length;
 
-  const statusCounts = group.applicants.reduce<Record<string, number>>(
-    (acc, a) => {
-      const s = a.status || "pending";
-      acc[s] = (acc[s] ?? 0) + 1;
-      return acc;
-    },
-    {}
-  );
+  const statusCounts = group.applicants.reduce<Record<string, number>>((acc, a) => {
+    const s = a.status || "pending";
+    acc[s] = (acc[s] ?? 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <div
@@ -362,8 +508,16 @@ function JobGroup({ group }: { group: JobGroup }) {
           style={{ borderColor: "rgba(0,0,0,0.05)", backgroundColor: "#F8FAFC" }}
         >
           <div className="space-y-3">
-            {group.applicants.map((a) => (
-              <ApplicantCard key={a.id} applicant={a} jobTitle={group.job_title} />
+            {group.applicants.map((applicant) => (
+              <ApplicantCard
+                key={applicant.id}
+                applicant={applicant}
+                jobTitle={group.job_title}
+                busy={busyIds.has(applicant.id)}
+                onArchive={() => onArchive(applicant.id)}
+                onRestore={() => onRestore(applicant.id)}
+                onDelete={() => onDelete(applicant.id)}
+              />
             ))}
           </div>
         </div>
@@ -371,47 +525,6 @@ function JobGroup({ group }: { group: JobGroup }) {
     </div>
   );
 }
-
-// ─── Stat card ────────────────────────────────────────────────────────────────
-
-type StatusFilter = "all" | "pending" | "shortlisted" | "rejected";
-
-const STAT_CONFIG: {
-  key: StatusFilter;
-  label: string;
-  activeColor: string;
-  activeBg: string;
-  activeBorder: string;
-}[] = [
-  {
-    key: "all",
-    label: "Total",
-    activeColor: "#0A1628",
-    activeBg: "rgba(10,22,40,0.07)",
-    activeBorder: "rgba(10,22,40,0.25)",
-  },
-  {
-    key: "pending",
-    label: "Pending",
-    activeColor: "#1A6DB5",
-    activeBg: "rgba(26,109,181,0.10)",
-    activeBorder: "rgba(26,109,181,0.35)",
-  },
-  {
-    key: "shortlisted",
-    label: "Shortlisted",
-    activeColor: "#2d8a1a",
-    activeBg: "rgba(77,201,47,0.12)",
-    activeBorder: "rgba(77,201,47,0.4)",
-  },
-  {
-    key: "rejected",
-    label: "Rejected",
-    activeColor: "#DC2626",
-    activeBg: "rgba(220,38,38,0.08)",
-    activeBorder: "rgba(220,38,38,0.3)",
-  },
-];
 
 function StatCard({
   label,
@@ -452,8 +565,6 @@ function StatCard({
   );
 }
 
-// ─── Root export ─────────────────────────────────────────────────────────────
-
 export default function ApplicationsClient({
   groups,
   filterJobId,
@@ -467,25 +578,128 @@ export default function ApplicationsClient({
 }) {
   const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [localGroups, setLocalGroups] = useState<JobGroup[]>(groups);
+  const [busyIds, setBusyIds] = useState<Set<string>>(new Set());
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [archivedOpen, setArchivedOpen] = useState(false);
 
-  // First apply job filter, then status filter
+  function setBusyId(id: string, on: boolean) {
+    setBusyIds((prev) => {
+      const next = new Set(prev);
+      if (on) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
+      return next;
+    });
+  }
+
+  function updateApplicant(id: string, updater: (applicant: Applicant) => Applicant) {
+    setLocalGroups((prev) =>
+      prev.map((group) => ({
+        ...group,
+        applicants: group.applicants.map((applicant) =>
+          applicant.id === id ? updater(applicant) : applicant
+        ),
+      }))
+    );
+  }
+
+  function removeApplicant(id: string) {
+    setLocalGroups((prev) =>
+      prev
+        .map((group) => ({
+          ...group,
+          applicants: group.applicants.filter((applicant) => applicant.id !== id),
+        }))
+        .filter((group) => group.applicants.length > 0)
+    );
+  }
+
+  async function handleArchive(id: string) {
+    setBusyId(id, true);
+    setActionError(null);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("applications")
+      .update({ archived: true })
+      .eq("id", id);
+
+    if (error) {
+      setActionError(`Failed to archive: ${error.message}`);
+    } else {
+      updateApplicant(id, (applicant) => ({ ...applicant, archived: true }));
+      setArchivedOpen(true);
+    }
+
+    setBusyId(id, false);
+  }
+
+  async function handleRestore(id: string) {
+    setBusyId(id, true);
+    setActionError(null);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("applications")
+      .update({ archived: false })
+      .eq("id", id);
+
+    if (error) {
+      setActionError(`Failed to restore: ${error.message}`);
+    } else {
+      updateApplicant(id, (applicant) => ({ ...applicant, archived: false }));
+    }
+
+    setBusyId(id, false);
+  }
+
+  async function handleDelete(id: string) {
+    setBusyId(id, true);
+    setActionError(null);
+    const supabase = createClient();
+    const { error } = await supabase.from("applications").delete().eq("id", id);
+
+    if (error) {
+      setActionError(`Failed to delete: ${error.message}`);
+    } else {
+      removeApplicant(id);
+    }
+
+    setBusyId(id, false);
+  }
+
   const jobFiltered = filterJobId
-    ? groups.filter((g) => g.job_id === filterJobId)
-    : groups;
+    ? localGroups.filter((group) => group.job_id === filterJobId)
+    : localGroups;
+
+  const liveGroups = jobFiltered
+    .map((group) => ({
+      ...group,
+      applicants: group.applicants.filter((applicant) => !applicant.archived),
+    }))
+    .filter((group) => group.applicants.length > 0);
+
+  const archivedGroups = jobFiltered
+    .map((group) => ({
+      ...group,
+      applicants: group.applicants.filter((applicant) => applicant.archived),
+    }))
+    .filter((group) => group.applicants.length > 0);
 
   const visibleGroups =
     statusFilter === "all"
-      ? jobFiltered
-      : jobFiltered
-          .map((g) => ({
-            ...g,
-            applicants: g.applicants.filter((a) =>
+      ? liveGroups
+      : liveGroups
+          .map((group) => ({
+            ...group,
+            applicants: group.applicants.filter((applicant) =>
               statusFilter === "pending"
-                ? !a.status || a.status === "pending"
-                : a.status === statusFilter
+                ? !applicant.status || applicant.status === "pending"
+                : applicant.status === statusFilter
             ),
           }))
-          .filter((g) => g.applicants.length > 0);
+          .filter((group) => group.applicants.length > 0);
 
   const statValues: Record<StatusFilter, number> = {
     all: counts.total,
@@ -494,9 +708,22 @@ export default function ApplicationsClient({
     rejected: counts.rejected,
   };
 
+  const archivedCount = archivedGroups.reduce(
+    (sum, group) => sum + group.applicants.length,
+    0
+  );
+
   return (
     <div>
-      {/* Stat cards */}
+      {actionError && (
+        <div
+          className="mb-3 rounded-xl px-4 py-3 text-sm"
+          style={{ backgroundColor: "rgba(220,38,38,0.08)", color: "#DC2626" }}
+        >
+          {actionError}
+        </div>
+      )}
+
       <div className="mb-5 flex flex-wrap gap-3">
         {STAT_CONFIG.map((cfg) => (
           <StatCard
@@ -510,7 +737,6 @@ export default function ApplicationsClient({
         ))}
       </div>
 
-      {/* Job filter banner */}
       {filterJobId && (
         <div
           className="mb-4 flex items-center justify-between rounded-xl px-4 py-2.5"
@@ -541,7 +767,7 @@ export default function ApplicationsClient({
         >
           <p className="text-sm" style={{ color: "rgba(26,26,26,0.45)" }}>
             {filterJobId
-              ? "No applications for this job yet."
+              ? "No active applications for this job."
               : statusFilter !== "all"
               ? `No ${statusFilter} applications.`
               : "No applications received yet."}
@@ -549,9 +775,76 @@ export default function ApplicationsClient({
         </div>
       ) : (
         <div className="space-y-3">
-          {visibleGroups.map((g) => (
-            <JobGroup key={g.job_id} group={g} />
+          {visibleGroups.map((group) => (
+            <JobGroup
+              key={group.job_id}
+              group={group}
+              busyIds={busyIds}
+              onArchive={handleArchive}
+              onRestore={handleRestore}
+              onDelete={handleDelete}
+            />
           ))}
+        </div>
+      )}
+
+      {archivedCount > 0 && (
+        <div className="mt-8">
+          <button
+            onClick={() => setArchivedOpen((open) => !open)}
+            className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left transition-colors hover:bg-gray-100"
+            style={{
+              backgroundColor: "rgba(10,22,40,0.03)",
+              border: "1px solid rgba(10,22,40,0.07)",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <Archive size={14} style={{ color: "rgba(26,26,26,0.4)" }} />
+              <span className="text-sm font-semibold" style={{ color: "rgba(26,26,26,0.55)" }}>
+                Archived applications
+              </span>
+              <span
+                className="rounded-full px-2 py-0.5 text-xs font-bold"
+                style={{ backgroundColor: "rgba(10,22,40,0.07)", color: "rgba(26,26,26,0.45)" }}
+              >
+                {archivedCount}
+              </span>
+            </div>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              className="transition-transform duration-200"
+              style={{
+                transform: archivedOpen ? "rotate(180deg)" : "rotate(0deg)",
+                color: "rgba(26,26,26,0.35)",
+              }}
+            >
+              <path
+                d="M4 6l4 4 4-4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+
+          {archivedOpen && (
+            <div className="mt-3 space-y-3">
+              {archivedGroups.map((group) => (
+                <JobGroup
+                  key={group.job_id}
+                  group={group}
+                  busyIds={busyIds}
+                  onArchive={handleArchive}
+                  onRestore={handleRestore}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

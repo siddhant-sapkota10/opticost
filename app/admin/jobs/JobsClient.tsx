@@ -4,7 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Archive, ArchiveRestore, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Archive, ArchiveRestore, ChevronDown, ChevronUp, Pencil, Plus, Trash2, X } from "lucide-react";
+
+type ApplicantPreview = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  created_at: string;
+  status: string;
+};
 
 export type JobRow = {
   id: string;
@@ -18,7 +27,27 @@ export type JobRow = {
   active: boolean;
   archived: boolean;
   application_count: number;
+  applicants: ApplicantPreview[];
 };
+
+const APPLICATION_STATUS_STYLES: Record<string, { bg: string; color: string }> = {
+  pending: { bg: "rgba(26,109,181,0.10)", color: "#1A6DB5" },
+  reviewed: { bg: "rgba(10,22,40,0.08)", color: "rgba(26,26,26,0.55)" },
+  shortlisted: { bg: "rgba(77,201,47,0.12)", color: "#2d8a1a" },
+  rejected: { bg: "rgba(220,38,38,0.09)", color: "#DC2626" },
+};
+
+function applicationStatusStyle(status: string) {
+  return APPLICATION_STATUS_STYLES[status] ?? APPLICATION_STATUS_STYLES.pending;
+}
+
+function formatApplicationDate(ts: string) {
+  return new Date(ts).toLocaleDateString("en-AU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
 
 // ─── Dropdown options ─────────────────────────────────────────────────────────
 
@@ -150,6 +179,7 @@ function JobModal({
         active: data.active as boolean,
         archived: false,
         application_count: 0,
+        applicants: [],
         ...payload,
       });
     }
@@ -366,6 +396,7 @@ function JobCard({
   onDelete: () => void;
 }) {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [applicationsOpen, setApplicationsOpen] = useState(false);
   const meta = [
     job.location,
     job.employment_type,
@@ -541,6 +572,86 @@ function JobCard({
           )}
         </div>
       </div>
+
+      {job.application_count > 0 && (
+        <div
+          className="border-t px-6 py-4"
+          style={{ borderColor: "rgba(10,22,40,0.06)", backgroundColor: "rgba(245,247,250,0.55)" }}
+        >
+          <button
+            onClick={() => setApplicationsOpen((open) => !open)}
+            className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left transition-colors hover:bg-white"
+            style={{ border: "1px solid rgba(10,22,40,0.07)", backgroundColor: "#fff" }}
+          >
+            <div>
+              <p className="text-sm font-semibold" style={{ color: "#0A1628" }}>
+                Applications for this role
+              </p>
+              <p className="mt-0.5 text-xs" style={{ color: "rgba(26,26,26,0.5)" }}>
+                Grouped under this listing for quick review
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span
+                className="rounded-full px-2.5 py-0.5 text-xs font-bold"
+                style={{ backgroundColor: "rgba(26,109,181,0.10)", color: "#1A6DB5" }}
+              >
+                {job.application_count}
+              </span>
+              {applicationsOpen ? (
+                <ChevronUp size={16} style={{ color: "rgba(26,26,26,0.4)" }} />
+              ) : (
+                <ChevronDown size={16} style={{ color: "rgba(26,26,26,0.4)" }} />
+              )}
+            </div>
+          </button>
+
+          {applicationsOpen && (
+            <div className="mt-3 space-y-2">
+              {job.applicants.map((applicant) => {
+                const statusStyle = applicationStatusStyle(applicant.status || "pending");
+
+                return (
+                  <div
+                    key={applicant.id}
+                    className="rounded-xl border bg-white px-4 py-3"
+                    style={{ borderColor: "rgba(10,22,40,0.07)" }}
+                  >
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold" style={{ color: "#0A1628" }}>
+                          {applicant.first_name} {applicant.last_name}
+                        </p>
+                        <p className="mt-0.5 truncate text-xs" style={{ color: "rgba(26,26,26,0.55)" }}>
+                          {applicant.email}
+                        </p>
+                        <p className="mt-0.5 text-xs" style={{ color: "rgba(26,26,26,0.4)" }}>
+                          Applied {formatApplicationDate(applicant.created_at)}
+                        </p>
+                      </div>
+                      <span
+                        className="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
+                        style={{ backgroundColor: statusStyle.bg, color: statusStyle.color }}
+                      >
+                        {(applicant.status || "pending").charAt(0).toUpperCase() +
+                          (applicant.status || "pending").slice(1)}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <Link
+                href={`/admin/applications?job=${job.id}`}
+                className="inline-flex items-center gap-1 text-xs font-semibold hover:underline"
+                style={{ color: "#1A6DB5" }}
+              >
+                View full application details
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -568,7 +679,11 @@ export default function JobsClient({
   function setBusyId(id: string, on: boolean) {
     setBusy((prev) => {
       const next = new Set(prev);
-      on ? next.add(id) : next.delete(id);
+      if (on) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
       return next;
     });
   }

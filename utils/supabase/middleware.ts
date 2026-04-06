@@ -21,7 +21,10 @@ export async function updateSession(request: NextRequest) {
   });
 
   // Refresh the session so it stays alive — do not remove this call.
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: claimsData } = await supabase.auth.getClaims();
 
-  return { supabaseResponse, user };
+  return { supabaseResponse, user, claims: claimsData?.claims ?? null };
 }

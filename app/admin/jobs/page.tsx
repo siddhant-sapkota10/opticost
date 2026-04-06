@@ -18,7 +18,7 @@ export default async function AdminJobsPage({
 
   const { data: jobs, error } = await supabase
     .from("jobs")
-    .select("id, title, description, location, employment_type, work_arrangement, start_date, security_clearance, active, archived, applications(count)")
+    .select("id, title, description, location, employment_type, work_arrangement, start_date, security_clearance, active, archived, applications(id, first_name, last_name, email, created_at, status, archived)")
     .order("title");
 
   if (error) {
@@ -46,8 +46,21 @@ export default async function AdminJobsPage({
     active: j.active as boolean,
     archived: (j.archived as boolean) ?? false,
     application_count: Array.isArray(j.applications)
-      ? (j.applications[0] as { count: number } | undefined)?.count ?? 0
+      ? j.applications.filter((app) => !app.archived).length
       : 0,
+    applicants: Array.isArray(j.applications)
+      ? j.applications
+          .filter((app) => !app.archived)
+          .map((app) => ({
+            id: app.id as string,
+            first_name: (app.first_name as string) ?? "",
+            last_name: (app.last_name as string) ?? "",
+            email: (app.email as string) ?? "",
+            created_at: app.created_at as string,
+            status: (app.status as string) ?? "pending",
+          }))
+          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      : [],
   }));
 
   const activeCount = normalised.filter((j) => j.active && !j.archived).length;

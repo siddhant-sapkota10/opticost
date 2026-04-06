@@ -354,6 +354,7 @@ function JobCard({ job }: { job: Job }) {
         phone: form.phone,
         cover_letter: form.coverLetter || null,
         resume_url,
+        archived: false,
       });
 
       if (insertError) {
