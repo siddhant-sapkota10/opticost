@@ -102,33 +102,6 @@ const services = [
   "Governance & Compliance",
 ] as const;
 
-const team = [
-  {
-    name: "Shiva Sapkota",
-    role: "Principal Consultant (Commercial Finance)",
-    initials: "SS",
-    text: "Leads complex procurement, pricing, and capability costing engagements across major government and Defence programs.",
-  },
-  {
-    name: "Ramesh Pudasaini",
-    role: "Principal Consultant (Financial Management)",
-    initials: "RP",
-    text: "Brings deep expertise in budgeting, audit, governance, and end-to-end financial management.",
-  },
-  {
-    name: "Vijay Kansal",
-    role: "Senior Consultant (Systems & Process)",
-    initials: "VK",
-    text: "Focused on transformation, systems optimisation, ERP improvement, and stronger finance operations.",
-  },
-  {
-    name: "Anuj Joshi",
-    role: "Senior Consultant (Audit & Compliance)",
-    initials: "AJ",
-    text: "Provides assurance across audit, compliance, reporting, and financial integrity in complex environments.",
-  },
-] as const;
-
 const approach = [
   {
     step: "Month 1",
@@ -468,53 +441,6 @@ export default function HomePage() {
               <ServicesContent />
             </div>
           )}
-        </div>
-      </section>
-
-      {/* TEAM PREVIEW */}
-      <section>
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
-          {mounted ? (
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.55 }}
-              className="mb-12"
-            >
-              <TeamHeader />
-            </motion.div>
-          ) : (
-            <div className="mb-12" style={{ opacity: 1 }}>
-              <TeamHeader />
-            </div>
-          )}
-
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {team.map((member, index) => (
-              mounted ? (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 22 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.45, delay: index * 0.06 }}
-                  className="rounded-[24px] border bg-white p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1"
-                  style={{ borderColor: "rgba(10,22,40,0.07)" }}
-                >
-                  <TeamMemberContent member={member} />
-                </motion.div>
-              ) : (
-                <div
-                  key={member.name}
-                  className="rounded-[24px] border bg-white p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1"
-                  style={{ opacity: 1, borderColor: "rgba(10,22,40,0.07)" }}
-                >
-                  <TeamMemberContent member={member} />
-                </div>
-              )
-            ))}
-          </div>
         </div>
       </section>
 
@@ -969,63 +895,6 @@ function ServicesContent() {
           </div>
         ))}
       </div>
-    </>
-  );
-}
-
-function TeamHeader() {
-  return (
-    <>
-      <SectionEyebrow>Our People</SectionEyebrow>
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <h2
-            className="text-3xl font-bold sm:text-4xl"
-            style={{ color: C.deepNavy }}
-          >
-            Senior consultants with real-world public sector experience
-          </h2>
-          <p className="mt-4 max-w-3xl text-base leading-8" style={{ color: C.mutedText }}>
-            Our team combines technical depth, leadership experience, and
-            practical delivery capability across Defence and broader government.
-          </p>
-        </div>
-
-        <Link
-          href="/people"
-          className="inline-flex items-center gap-2 text-sm font-bold"
-          style={{ color: C.elecBlue }}
-        >
-          View full team
-          <ArrowRight size={16} />
-        </Link>
-      </div>
-    </>
-  );
-}
-
-function TeamMemberContent({ member }: { member: typeof team[number] }) {
-  return (
-    <>
-      <div className="mb-5 flex items-center gap-4">
-        <div
-          className="flex h-14 w-14 items-center justify-center rounded-full text-sm font-bold text-white"
-          style={{ backgroundColor: C.elecBlue }}
-        >
-          {member.initials}
-        </div>
-        <div>
-          <p className="text-base font-bold" style={{ color: C.deepNavy }}>
-            {member.name}
-          </p>
-          <p className="text-sm" style={{ color: C.elecBlue }}>
-            {member.role}
-          </p>
-        </div>
-      </div>
-      <p className="text-sm leading-7" style={{ color: C.mutedText }}>
-        {member.text}
-      </p>
     </>
   );
 }
