@@ -1,4 +1,8 @@
+import { cookies } from "next/headers";
+import Image from "next/image";
+import Link from "next/link";
 import Navbar from "../components/Navbar";
+import { ArrowRight, ExternalLink, Mail } from "lucide-react";
 
 export const metadata = {
   title: "About | OptiCost Consulting",
@@ -16,7 +20,47 @@ const C = {
   white: "#FFFFFF",
 } as const;
 
-export default function AboutPage() {
+type PersonRow = {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  email: string;
+  linkedin_url: string;
+  photo_url: string;
+};
+
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0] ?? "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+export default async function AboutPage() {
+  const cookieStore = await cookies();
+  const { createClient } = await import("@/utils/supabase/server");
+  const supabase = createClient(cookieStore);
+
+  const { data } = await supabase
+    .from("people")
+    .select("id, name, role, bio, email, linkedin_url, photo_url")
+    .eq("active", true)
+    .order("display_order", { ascending: true })
+    .order("name", { ascending: true });
+
+  const team: PersonRow[] = (data ?? []).map((person) => ({
+    id: person.id as string,
+    name: person.name as string,
+    role: (person.role as string) ?? "",
+    bio: (person.bio as string) ?? "",
+    email: (person.email as string) ?? "",
+    linkedin_url: (person.linkedin_url as string) ?? "",
+    photo_url: (person.photo_url as string) ?? "",
+  }));
+
   return (
     <div
       className="min-h-screen overflow-x-hidden"
@@ -197,6 +241,61 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* TEAM */}
+      <section>
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+          <div className="mb-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span
+                className="inline-block text-xs font-bold uppercase tracking-[0.22em]"
+                style={{ color: C.elecBlue }}
+              >
+                The Team
+              </span>
+              <h2
+                className="mt-3 text-3xl font-bold leading-snug sm:text-4xl"
+                style={{ color: C.deepNavy }}
+              >
+                Meet the people behind OptiCost
+              </h2>
+              <p
+                className="mt-4 max-w-3xl text-base leading-8"
+                style={{ color: C.mutedText }}
+              >
+                This section is sourced directly from our live People database, so the About page
+                always reflects the current team.
+              </p>
+            </div>
+
+            <Link
+              href="/people"
+              className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white transition-transform duration-300 hover:-translate-y-0.5"
+              style={{ backgroundColor: C.brightGreen }}
+            >
+              View all people
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          {team.length === 0 ? (
+            <div
+              className="rounded-[28px] border border-dashed px-8 py-14 text-center"
+              style={{ borderColor: "rgba(26,109,181,0.25)" }}
+            >
+              <p className="text-sm" style={{ color: C.mutedText }}>
+                Team profiles will appear here once they are added in People.
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2">
+              {team.map((member) => (
+                <PersonCard key={member.id} {...member} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* STATS BAR */}
       <section
         className="relative overflow-hidden"
@@ -241,6 +340,79 @@ export default function AboutPage() {
 
         <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
       </section>
+    </div>
+  );
+}
+
+function PersonCard({ name, role, bio, email, linkedin_url, photo_url }: PersonRow) {
+  return (
+    <div
+      className="group h-full rounded-[26px] border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      style={{ borderColor: "rgba(10,22,40,0.07)" }}
+    >
+      <div className="mb-5 flex items-center gap-4">
+        {photo_url ? (
+          <Image
+            src={photo_url}
+            alt={name}
+            width={56}
+            height={56}
+            className="rounded-full object-cover"
+            style={{ width: 56, height: 56, flexShrink: 0 }}
+          />
+        ) : (
+          <div
+            className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full text-base font-bold text-white"
+            style={{ backgroundColor: C.elecBlue }}
+          >
+            {initials(name)}
+          </div>
+        )}
+        <div>
+          <p className="text-base font-bold leading-tight" style={{ color: C.deepNavy }}>
+            {name}
+          </p>
+          <p className="mt-0.5 text-sm font-medium" style={{ color: C.elecBlue }}>
+            {role}
+          </p>
+        </div>
+      </div>
+
+      {bio && (
+        <p className="mb-5 text-sm leading-7" style={{ color: C.bodyLight }}>
+          {bio}
+        </p>
+      )}
+
+      {(email || linkedin_url) && (
+        <>
+          <div className="mb-4 h-px w-full" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
+          <div className="flex flex-wrap items-center gap-3">
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors hover:underline"
+                style={{ color: C.elecBlue }}
+              >
+                <Mail size={13} />
+                {email}
+              </a>
+            )}
+            {linkedin_url && (
+              <a
+                href={linkedin_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors hover:underline"
+                style={{ color: C.elecBlue }}
+              >
+                <ExternalLink size={13} />
+                LinkedIn
+              </a>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
