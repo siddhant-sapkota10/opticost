@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import {
   MapPin,
   Clock,
+  Briefcase,
+  CalendarDays,
+  ShieldCheck,
   ChevronDown,
   ChevronUp,
   Loader2,
@@ -24,7 +27,13 @@ const C = {
 type Job = {
   id: string;
   title: string;
+  description: string | null;
   active: boolean;
+  location: string | null;
+  employment_type: string | null;
+  work_arrangement: string | null;
+  start_date: string | null;
+  security_clearance: string | null;
 };
 
 type AppForm = {
@@ -57,8 +66,9 @@ export default function CareersPage() {
 
       const { data, error } = await supabase
         .from("jobs")
-        .select("id, title, active")
+        .select("id, title, description, active, location, employment_type, work_arrangement, start_date, security_clearance")
         .eq("active", true)
+        .eq("archived", false)
         .order("title");
 
       if (error) {
@@ -323,7 +333,10 @@ function JobCard({ job }: { job: Job }) {
           .from("resumes")
           .upload(path, form.resume, { contentType: "application/pdf" });
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error("[Resume upload error]", uploadError);
+          throw new Error(`Resume upload failed: ${uploadError.message}`);
+        }
 
         const { data: urlData } = supabase.storage
           .from("resumes")
@@ -343,7 +356,10 @@ function JobCard({ job }: { job: Job }) {
         resume_url,
       });
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error("[Application insert error]", insertError);
+        throw new Error(`Database insert failed: ${insertError.message}`);
+      }
 
       setSuccess(true);
       setForm(EMPTY_FORM);
@@ -351,8 +367,10 @@ function JobCard({ job }: { job: Job }) {
         setOpen(false);
         setSuccess(false);
       }, 4000);
-    } catch {
-      setFormError("Something went wrong. Please try again.");
+    } catch (err) {
+      console.error("[Application submit error]", err);
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+      setFormError(`Something went wrong: ${msg}`);
     } finally {
       setSubmitting(false);
     }
@@ -371,22 +389,42 @@ function JobCard({ job }: { job: Job }) {
           {job.title}
         </h3>
 
-        <div className="mb-6 flex flex-wrap gap-4">
-          <span
-            className="flex items-center gap-1.5 text-sm"
-            style={{ color: "rgba(26,26,26,0.6)" }}
-          >
-            <MapPin size={14} strokeWidth={1.75} style={{ color: C.brightGreen }} />
-            Canberra, ACT
-          </span>
-          <span
-            className="flex items-center gap-1.5 text-sm"
-            style={{ color: "rgba(26,26,26,0.6)" }}
-          >
-            <Clock size={14} strokeWidth={1.75} style={{ color: C.brightGreen }} />
-            Full Time / Part Time / Contract
-          </span>
+        <div className="mb-4 flex flex-wrap gap-3">
+          {job.location && (
+            <JobMeta icon={<MapPin size={14} strokeWidth={1.75} style={{ color: C.brightGreen }} />}>
+              {job.location}
+            </JobMeta>
+          )}
+          {job.employment_type && (
+            <JobMeta icon={<Clock size={14} strokeWidth={1.75} style={{ color: C.brightGreen }} />}>
+              {job.employment_type}
+            </JobMeta>
+          )}
+          {job.work_arrangement && (
+            <JobMeta icon={<Briefcase size={14} strokeWidth={1.75} style={{ color: C.brightGreen }} />}>
+              {job.work_arrangement}
+            </JobMeta>
+          )}
+          {job.start_date && (
+            <JobMeta icon={<CalendarDays size={14} strokeWidth={1.75} style={{ color: C.brightGreen }} />}>
+              {job.start_date}
+            </JobMeta>
+          )}
+          {job.security_clearance && job.security_clearance !== "None" && (
+            <JobMeta icon={<ShieldCheck size={14} strokeWidth={1.75} style={{ color: C.brightGreen }} />}>
+              {job.security_clearance} Clearance
+            </JobMeta>
+          )}
         </div>
+
+        {job.description && (
+          <p
+            className="mb-6 text-sm leading-relaxed"
+            style={{ color: C.mutedText }}
+          >
+            {job.description}
+          </p>
+        )}
 
         <button
           onClick={handleToggle}
@@ -559,6 +597,24 @@ function JobCard({ job }: { job: Job }) {
         }
       `}</style>
     </div>
+  );
+}
+
+function JobMeta({
+  icon,
+  children,
+}: {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <span
+      className="flex items-center gap-1.5 text-sm"
+      style={{ color: "rgba(26,26,26,0.6)" }}
+    >
+      {icon}
+      {children}
+    </span>
   );
 }
 
