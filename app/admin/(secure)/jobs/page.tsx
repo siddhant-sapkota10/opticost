@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import JobsClient from "./JobsClient";
+import JobsClient from "../../jobs/JobsClient";
 
 export const dynamic = "force-dynamic";
 

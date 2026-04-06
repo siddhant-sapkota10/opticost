@@ -176,7 +176,7 @@ function ApplicantCard({
         opacity: applicant.archived ? 0.78 : 1,
       }}
     >
-      <div className="flex flex-wrap items-start justify-between gap-3 px-5 py-4">
+      <div className="flex flex-wrap items-start justify-between gap-3 px-4 py-4 sm:px-5">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-sm font-bold" style={{ color: "#0A1628" }}>
@@ -259,7 +259,7 @@ function ApplicantCard({
       </div>
 
       <div
-        className="border-t px-5 pb-5 pt-3"
+        className="border-t px-4 pb-5 pt-3 sm:px-5"
         style={{ borderColor: "rgba(0,0,0,0.05)" }}
       >
         <div className="flex flex-wrap gap-3">
@@ -465,7 +465,7 @@ function JobGroup({
     >
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left transition-colors hover:bg-gray-50"
+        className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-colors hover:bg-gray-50 sm:px-6"
       >
         <div className="min-w-0">
           <span className="text-base font-semibold" style={{ color: "#0A1628" }}>
@@ -504,7 +504,7 @@ function JobGroup({
 
       {open && (
         <div
-          className="border-t px-5 pb-5 pt-4"
+          className="border-t px-4 pb-5 pt-4 sm:px-5"
           style={{ borderColor: "rgba(0,0,0,0.05)", backgroundColor: "#F8FAFC" }}
         >
           <div className="space-y-3">
@@ -739,7 +739,7 @@ export default function ApplicationsClient({
 
       {filterJobId && (
         <div
-          className="mb-4 flex items-center justify-between rounded-xl px-4 py-2.5"
+          className="mb-4 flex flex-col gap-3 rounded-xl px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between"
           style={{
             backgroundColor: "rgba(26,109,181,0.07)",
             border: "1px solid rgba(26,109,181,0.2)",

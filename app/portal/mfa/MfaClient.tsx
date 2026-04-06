@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
@@ -20,6 +19,25 @@ type EnrollmentState = {
 };
 
 type Mode = "loading" | "setup" | "challenge";
+
+function normalizeQrCodeSrc(src: string) {
+  const trimmed = src.trim();
+
+  if (!trimmed.startsWith("data:image/svg+xml")) {
+    return trimmed;
+  }
+
+  const commaIndex = trimmed.indexOf(",");
+  if (commaIndex === -1) {
+    return trimmed;
+  }
+
+  const prefix = trimmed.slice(0, commaIndex + 1);
+  const data = trimmed.slice(commaIndex + 1);
+  const decoded = data.includes("%") ? data : encodeURIComponent(data);
+
+  return `${prefix}${decoded}`;
+}
 
 export default function MfaClient() {
   const router = useRouter();
@@ -215,6 +233,8 @@ export default function MfaClient() {
     caretColor: "#4DC92F",
   };
 
+  const qrCodeSrc = enrollment ? normalizeQrCodeSrc(enrollment.qrCode) : "";
+
   return (
     <div className="mx-auto max-w-3xl">
       <div className="rounded-3xl px-8 py-8" style={cardStyle}>
@@ -281,12 +301,9 @@ export default function MfaClient() {
               <form onSubmit={verifyEnrollment} className="space-y-5">
                 <div className="grid gap-5 md:grid-cols-[220px_1fr]">
                   <div className="rounded-2xl border bg-white p-4" style={{ borderColor: "rgba(10,22,40,0.08)" }}>
-                    <Image
-                      src={enrollment.qrCode}
+                    <img
+                      src={qrCodeSrc}
                       alt={enrollment.uri}
-                      width={220}
-                      height={220}
-                      unoptimized
                       className="h-auto w-full"
                     />
                   </div>

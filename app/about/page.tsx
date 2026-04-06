@@ -96,7 +96,7 @@ export default async function AboutPage() {
           style={{ backgroundColor: "rgba(26, 109, 181, 0.18)" }}
         />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
           <div className="max-w-4xl">
             <div
               className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em]"
@@ -134,7 +134,7 @@ export default async function AboutPage() {
 
       {/* ABOUT US */}
       <section>
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           <div className="mb-12">
             <span
               className="inline-block text-xs font-bold uppercase tracking-[0.22em]"
@@ -162,7 +162,7 @@ export default async function AboutPage() {
 
           <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
             <div
-              className="rounded-[28px] border bg-white p-8 shadow-sm"
+              className="rounded-[28px] border bg-white p-6 shadow-sm sm:p-8"
               style={{ borderColor: "rgba(10,22,40,0.07)" }}
             >
               <h3
@@ -197,7 +197,7 @@ export default async function AboutPage() {
             </div>
 
             <div
-              className="rounded-[28px] p-8 shadow-sm"
+              className="rounded-[28px] p-6 shadow-sm sm:p-8"
               style={{
                 background: `linear-gradient(180deg, ${C.deepNavy} 0%, #102340 100%)`,
               }}
@@ -243,7 +243,7 @@ export default async function AboutPage() {
 
       {/* TEAM */}
       <section>
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           <div className="mb-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <span
@@ -312,7 +312,7 @@ export default async function AboutPage() {
 
         <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-16 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
           <div
             className="grid gap-px md:grid-cols-3"
             style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
@@ -347,10 +347,10 @@ export default async function AboutPage() {
 function PersonCard({ name, role, bio, email, linkedin_url, photo_url }: PersonRow) {
   return (
     <div
-      className="group h-full rounded-[26px] border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      className="group h-full rounded-[26px] border bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-7"
       style={{ borderColor: "rgba(10,22,40,0.07)" }}
     >
-      <div className="mb-5 flex items-center gap-4">
+      <div className="mb-5 flex items-start gap-4">
         {photo_url ? (
           <Image
             src={photo_url}
@@ -368,7 +368,7 @@ function PersonCard({ name, role, bio, email, linkedin_url, photo_url }: PersonR
             {initials(name)}
           </div>
         )}
-        <div>
+        <div className="min-w-0">
           <p className="text-base font-bold leading-tight" style={{ color: C.deepNavy }}>
             {name}
           </p>
@@ -391,7 +391,7 @@ function PersonCard({ name, role, bio, email, linkedin_url, photo_url }: PersonR
             {email && (
               <a
                 href={`mailto:${email}`}
-                className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors hover:underline"
+                className="inline-flex max-w-full items-center gap-1.5 break-all text-xs font-medium transition-colors hover:underline"
                 style={{ color: C.elecBlue }}
               >
                 <Mail size={13} />

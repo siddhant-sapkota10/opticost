@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import PeopleClient from "./PeopleClient";
+import PeopleClient from "../../people/PeopleClient";
 
 export const dynamic = "force-dynamic";
 

@@ -198,7 +198,7 @@ export default function HomePage() {
           />
         )}
 
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-16 lg:grid-cols-2 lg:px-8 lg:py-24">
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-16 lg:grid-cols-2 lg:gap-12 lg:px-8 lg:py-24">
           {mounted ? (
             <motion.div
               initial={{ opacity: 0, y: 28 }}
@@ -264,7 +264,7 @@ export default function HomePage() {
 
       {/* ABOUT */}
       <section className="relative">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           {mounted ? (
             <motion.div
               initial={{ opacity: 0, y: 22 }}
@@ -285,7 +285,7 @@ export default function HomePage() {
 
       {/* CAPABILITIES */}
       <section>
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           {mounted ? (
             <motion.div
               initial={{ opacity: 0, y: 18 }}
@@ -337,7 +337,7 @@ export default function HomePage() {
               "radial-gradient(circle at 12% 50%, rgba(77,201,47,0.12), transparent 22%), radial-gradient(circle at 85% 20%, rgba(26,109,181,0.18), transparent 25%)",
           }}
         />
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           {mounted ? (
             <motion.div
               initial={{ opacity: 0, y: 18 }}
@@ -363,7 +363,7 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.45, delay: index * 0.08 }}
-                  className="relative rounded-[28px] border p-7"
+                  className="relative rounded-[28px] border p-5 sm:p-7"
                   style={{
                     borderColor: "rgba(255,255,255,0.10)",
                     backgroundColor: "rgba(255,255,255,0.04)",
@@ -374,7 +374,7 @@ export default function HomePage() {
               ) : (
                 <div
                   key={item.step}
-                  className="relative rounded-[28px] border p-7"
+                  className="relative rounded-[28px] border p-5 sm:p-7"
                   style={{
                     opacity: 1,
                     borderColor: "rgba(255,255,255,0.10)",
@@ -392,21 +392,21 @@ export default function HomePage() {
 
       {/* DIFFERENTIATORS + SERVICES */}
       <section>
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-20 lg:grid-cols-2 lg:px-8 lg:py-24">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:py-24">
           {mounted ? (
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.55 }}
-              className="rounded-[28px] border bg-white p-8 shadow-sm"
+              className="rounded-[28px] border bg-white p-6 shadow-sm sm:p-8"
               style={{ borderColor: "rgba(10,22,40,0.07)" }}
             >
               <DifferentiatorsContent />
             </motion.div>
           ) : (
             <div
-              className="rounded-[28px] border bg-white p-8 shadow-sm"
+              className="rounded-[28px] border bg-white p-6 shadow-sm sm:p-8"
               style={{ opacity: 1, borderColor: "rgba(10,22,40,0.07)" }}
             >
               <DifferentiatorsContent />
@@ -419,7 +419,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.55, delay: 0.08 }}
-              className="rounded-[28px] border p-8 shadow-sm"
+              className="rounded-[28px] border p-6 shadow-sm sm:p-8"
               style={{
                 borderColor: "rgba(10,22,40,0.07)",
                 background:
@@ -430,7 +430,7 @@ export default function HomePage() {
             </motion.div>
           ) : (
             <div
-              className="rounded-[28px] border p-8 shadow-sm"
+              className="rounded-[28px] border p-6 shadow-sm sm:p-8"
               style={{
                 opacity: 1,
                 borderColor: "rgba(10,22,40,0.07)",
@@ -458,7 +458,7 @@ export default function HomePage() {
           }}
         />
 
-        <div className="relative z-10 mx-auto max-w-5xl px-6 py-20 text-center lg:px-8 lg:py-24">
+        <div className="relative z-10 mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           {mounted ? (
             <motion.div
               initial={{ opacity: 0, y: 18 }}
@@ -514,7 +514,7 @@ function HeroContent({
         OptiCost Consulting
       </div>
 
-      <h1 className="max-w-xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+      <h1 className="max-w-xl text-3xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
         Financial clarity for complex government and Defence programs
       </h1>
 
@@ -584,8 +584,8 @@ function SlideShowPanel({
         backdropFilter: "blur(10px)",
       }}
     >
-      <div className="border-b px-6 py-4" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-        <div className="flex items-center justify-between gap-4">
+      <div className="border-b px-4 py-4 sm:px-6" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p
               className="text-xs font-bold uppercase tracking-[0.2em]"
@@ -619,7 +619,7 @@ function SlideShowPanel({
         </div>
       </div>
 
-      <div className="relative min-h-[360px] p-6 sm:min-h-[390px] sm:p-8">
+      <div className="relative min-h-[340px] p-4 sm:min-h-[390px] sm:p-8">
         {mounted ? (
           <AnimatePresence mode="wait">
             <motion.div
@@ -720,7 +720,7 @@ function AboutContent() {
   return (
     <>
       <div
-        className="rounded-[28px] border bg-white p-8 shadow-sm"
+        className="rounded-[28px] border bg-white p-6 shadow-sm sm:p-8"
         style={{ borderColor: "rgba(10,22,40,0.07)" }}
       >
         <SectionEyebrow>About Us</SectionEyebrow>
@@ -744,7 +744,7 @@ function AboutContent() {
       </div>
 
       <div
-        className="rounded-[28px] p-8 shadow-sm"
+        className="rounded-[28px] p-6 shadow-sm sm:p-8"
         style={{
           background: `linear-gradient(180deg, ${C.deepNavy} 0%, #102340 100%)`,
         }}
@@ -1024,7 +1024,7 @@ function CapabilityCard({
 }) {
   return (
     <div
-      className="group h-full rounded-[26px] border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      className="group h-full rounded-[26px] border bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-7"
       style={{ borderColor: "rgba(10,22,40,0.07)" }}
     >
       <div

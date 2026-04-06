@@ -201,7 +201,7 @@ function JobModal({
         style={{ border: "1px solid rgba(10,22,40,0.08)", maxHeight: "90vh" }}
       >
         <div
-          className="flex shrink-0 items-center justify-between border-b px-6 py-4"
+          className="flex shrink-0 items-center justify-between border-b px-4 py-4 sm:px-6"
           style={{ borderColor: "rgba(10,22,40,0.07)" }}
         >
           <h2 className="text-base font-bold" style={{ color: "#0A1628" }}>
@@ -218,7 +218,7 @@ function JobModal({
 
         <form
           onSubmit={handleSave}
-          className="overflow-y-auto px-6 py-5"
+          className="overflow-y-auto px-4 py-5 sm:px-6"
           style={{ scrollbarWidth: "thin" }}
         >
           <div className="space-y-4">
@@ -257,7 +257,7 @@ function JobModal({
               />
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Employment Type">
                 <select
                   value={employmentType}
@@ -291,7 +291,7 @@ function JobModal({
               </Field>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Start Date">
                 <input
                   type="text"
@@ -333,7 +333,7 @@ function JobModal({
             )}
           </div>
 
-          <div className="mt-5 flex justify-end gap-3">
+          <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={onClose}
@@ -415,7 +415,7 @@ function JobCard({
         opacity: job.archived ? 0.72 : 1,
       }}
     >
-      <div className="flex items-start justify-between gap-4 px-6 py-4">
+      <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span
@@ -472,7 +472,7 @@ function JobCard({
           </Link>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 pt-0.5">
+        <div className="flex flex-wrap items-center gap-2 pt-0.5">
           {job.archived ? (
             /* Archived: Restore + Delete (with inline confirmation) */
             confirmingDelete ? (
@@ -575,7 +575,7 @@ function JobCard({
 
       {job.application_count > 0 && (
         <div
-          className="border-t px-6 py-4"
+          className="border-t px-4 py-4 sm:px-6"
           style={{ borderColor: "rgba(10,22,40,0.06)", backgroundColor: "rgba(245,247,250,0.55)" }}
         >
           <button
@@ -798,7 +798,7 @@ export default function JobsClient({
 
       {activeOnly && (
         <div
-          className="mb-4 flex items-center justify-between rounded-xl px-4 py-2.5"
+          className="mb-4 flex flex-col gap-3 rounded-xl px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between"
           style={{
             backgroundColor: "rgba(77,201,47,0.08)",
             border: "1px solid rgba(77,201,47,0.25)",

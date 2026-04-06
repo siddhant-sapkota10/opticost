@@ -94,7 +94,7 @@ export default function ContactPage() {
           style={{ backgroundColor: "rgba(26, 109, 181, 0.18)" }}
         />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
           <div className="max-w-3xl">
             <div
               className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em]"
@@ -154,7 +154,7 @@ export default function ContactPage() {
 
       {/* MAIN CONTENT */}
       <section>
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             {/* LEFT COLUMN */}
             <div>
@@ -222,11 +222,11 @@ export default function ContactPage() {
             {/* RIGHT COLUMN */}
             <div
               id="contact-form"
-              className="rounded-[28px] border bg-white p-8 shadow-sm lg:p-10"
+              className="rounded-[28px] border bg-white p-5 shadow-sm sm:p-8 lg:p-10"
               style={{ borderColor: "rgba(10,22,40,0.07)" }}
             >
               {submitted ? (
-                <div className="flex min-h-[360px] flex-col items-center justify-center text-center">
+                <div className="flex min-h-[300px] flex-col items-center justify-center text-center sm:min-h-[360px]">
                   <div
                     className="mb-5 flex h-16 w-16 items-center justify-center rounded-full"
                     style={{ backgroundColor: "rgba(77,201,47,0.12)" }}

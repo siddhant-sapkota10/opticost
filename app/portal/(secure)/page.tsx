@@ -77,7 +77,9 @@ export default async function PortalPage() {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: applications } = await supabase
     .from("applications")
@@ -94,10 +96,9 @@ export default async function PortalPage() {
 
   return (
     <div>
-      {/* Page header */}
       <div className="mb-8">
         <h1
-          className="text-2xl font-bold tracking-tight"
+          className="text-2xl font-bold tracking-tight sm:text-3xl"
           style={{ color: "#0A1628" }}
         >
           Hi, {displayName}
@@ -108,9 +109,8 @@ export default async function PortalPage() {
       </div>
 
       {apps.length === 0 ? (
-        /* Empty state */
         <div
-          className="flex flex-col items-center rounded-2xl px-8 py-16 text-center"
+          className="flex flex-col items-center rounded-2xl px-5 py-12 text-center sm:px-8 sm:py-16"
           style={{
             backgroundColor: "#fff",
             border: "1px solid rgba(10,22,40,0.08)",
@@ -153,12 +153,11 @@ export default async function PortalPage() {
           </Link>
         </div>
       ) : (
-        /* Application cards */
         <div className="flex flex-col gap-4">
           {apps.map((app) => (
             <div
               key={app.id}
-              className="rounded-2xl px-6 py-5 transition-shadow duration-200 hover:shadow-md"
+              className="rounded-2xl px-4 py-4 transition-shadow duration-200 hover:shadow-md sm:px-6 sm:py-5"
               style={{
                 backgroundColor: "#fff",
                 border: "1px solid rgba(10,22,40,0.08)",
@@ -205,7 +204,6 @@ export default async function PortalPage() {
         </div>
       )}
 
-      {/* Footer nudge */}
       <p className="mt-8 text-center text-xs" style={{ color: "rgba(10,22,40,0.35)" }}>
         Not seeing your application?{" "}
         <Link href="/contact" className="underline underline-offset-2 hover:opacity-80">

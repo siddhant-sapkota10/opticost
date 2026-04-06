@@ -236,7 +236,7 @@ function PersonModal({
       >
         {/* Header */}
         <div
-          className="flex shrink-0 items-center justify-between border-b px-6 py-4"
+          className="flex shrink-0 items-center justify-between border-b px-4 py-4 sm:px-6"
           style={{ borderColor: "rgba(10,22,40,0.07)" }}
         >
           <h2 className="text-base font-bold" style={{ color: "#0A1628" }}>
@@ -253,7 +253,7 @@ function PersonModal({
 
         <form
           onSubmit={handleSave}
-          className="overflow-y-auto px-6 py-5"
+          className="overflow-y-auto px-4 py-5 sm:px-6"
           style={{ scrollbarWidth: "thin" }}
         >
           <div className="space-y-4">
@@ -312,7 +312,7 @@ function PersonModal({
               </div>
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Full Name" required>
                 <input
                   ref={nameRef}
@@ -350,7 +350,7 @@ function PersonModal({
               />
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Email">
                 <input
                   type="email"
@@ -374,7 +374,7 @@ function PersonModal({
               </Field>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="LinkedIn URL">
                 <input
                   type="url"
@@ -409,7 +409,7 @@ function PersonModal({
             )}
           </div>
 
-          <div className="mt-5 flex justify-end gap-3">
+          <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={onClose}
@@ -460,7 +460,7 @@ function PersonCard({
         opacity: person.active ? 1 : 0.72,
       }}
     >
-      <div className="flex items-center justify-between gap-4 px-5 py-4">
+      <div className="flex flex-col gap-4 px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
         {/* Left: avatar + info */}
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <Avatar name={person.name} photoUrl={person.photo_url} size={44} />
@@ -492,7 +492,7 @@ function PersonCard({
         </div>
 
         {/* Right: actions */}
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {person.active ? (
             <>
               <button

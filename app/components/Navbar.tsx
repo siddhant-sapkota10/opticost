@@ -50,23 +50,23 @@ export default function Navbar() {
         borderBottom: "1px solid rgba(255,255,255,0.08)",
       }}
     >
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="flex h-[88px] items-center justify-between">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-[78px] items-center justify-between lg:h-[88px]">
 
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
               src="/logo.png"
               alt="OptiCost Consulting"
-              width={240}
-              height={80}
-              className="h-[72px] w-auto object-contain"
+              width={144}
+              height={48}
+              className="h-[34px] w-auto object-contain sm:h-[38px]"
               priority
             />
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-10">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
@@ -82,7 +82,7 @@ export default function Navbar() {
             {user ? (
               <Link
                 href={portalHref}
-                className="ml-2 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5"
+                className="ml-1 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 xl:ml-2 xl:px-5"
                 style={{
                   backgroundColor: "rgba(77,201,47,0.12)",
                   border: "1px solid rgba(77,201,47,0.30)",
@@ -95,7 +95,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="ml-2 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5"
+                className="ml-1 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 xl:ml-2 xl:px-5"
                 style={{
                   backgroundColor: "rgba(255,255,255,0.06)",
                   border: "1px solid rgba(255,255,255,0.18)",
@@ -110,7 +110,7 @@ export default function Navbar() {
             {/* Get in Touch CTA */}
             <Link
               href="/contact"
-              className="inline-flex items-center rounded-xl px-6 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
+              className="inline-flex items-center rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 xl:px-6"
               style={{ backgroundColor: "#4DC92F" }}
             >
               Get in Touch
@@ -120,7 +120,8 @@ export default function Navbar() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden text-white"
+            className="lg:hidden text-white"
+            aria-label={open ? "Close menu" : "Open menu"}
           >
             {open ? <X size={26} /> : <Menu size={26} />}
           </button>
@@ -129,14 +130,14 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-[#0A1628] border-t border-white/10">
-          <div className="flex flex-col px-6 py-6 gap-5">
+        <div className="lg:hidden border-t border-white/10 bg-[#0A1628]">
+          <div className="flex flex-col gap-5 px-4 py-6 sm:px-6">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="text-base font-semibold text-white/80 hover:text-white"
+                className="rounded-xl px-1 py-1 text-base font-semibold text-white/80 hover:text-white"
               >
                 {link.label}
               </Link>

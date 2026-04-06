@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import ApplicationsClient, { type JobGroup } from "./ApplicationsClient";
+import ApplicationsClient, { type JobGroup } from "../../applications/ApplicationsClient";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +36,6 @@ export default async function AdminApplicationsPage({
 
   const applications = data ?? [];
 
-  // Group by job_id
   const groupMap = new Map<string, JobGroup>();
   for (const app of applications) {
     const key = app.job_id as string;

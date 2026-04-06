@@ -117,7 +117,7 @@ export default function CareersPage() {
           style={{ backgroundColor: "rgba(26, 109, 181, 0.18)" }}
         />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
           <div className="max-w-3xl">
             <div
               className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em]"
@@ -178,7 +178,7 @@ export default function CareersPage() {
 
       {/* JOB LISTINGS */}
       <section id="current-opportunities">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           <div className="mb-12">
             <span
               className="inline-block text-xs font-bold uppercase tracking-[0.22em]"
@@ -214,7 +214,7 @@ export default function CareersPage() {
 
           {!loading && !error && jobs.length === 0 && (
             <div
-              className="rounded-[26px] border border-dashed px-8 py-16 text-center"
+              className="rounded-[26px] border border-dashed px-6 py-12 text-center sm:px-8 sm:py-16"
               style={{ borderColor: "rgba(26,109,181,0.25)" }}
             >
               <p
@@ -227,7 +227,7 @@ export default function CareersPage() {
           )}
 
           {!loading && !error && jobs.length > 0 && (
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2">
               {jobs.map((job) => (
                 <JobCard key={job.id} job={job} />
               ))}
@@ -250,7 +250,7 @@ export default function CareersPage() {
           }}
         />
 
-        <div className="relative mx-auto max-w-5xl px-6 py-20 text-center lg:px-8 lg:py-24">
+        <div className="relative mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             Don’t see the right role?
           </h2>
@@ -382,7 +382,7 @@ function JobCard({ job }: { job: Job }) {
       className="group overflow-hidden rounded-[26px] border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
       style={{ borderColor: "rgba(10,22,40,0.07)" }}
     >
-      <div className="p-7">
+      <div className="p-5 sm:p-7">
         <h3
           className="mb-3 text-xl font-bold leading-snug"
           style={{ color: C.deepNavy }}
@@ -429,7 +429,7 @@ function JobCard({ job }: { job: Job }) {
 
         <button
           onClick={handleToggle}
-          className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white shadow-sm transition-transform duration-300 hover:-translate-y-0.5"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white shadow-sm transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           style={{ backgroundColor: C.brightGreen }}
         >
           {open ? "Close" : "Apply Now"}
@@ -655,7 +655,7 @@ function LoadingState() {
       {[1, 2].map((n) => (
         <div
           key={n}
-          className="animate-pulse rounded-[26px] border bg-white p-7 shadow-sm"
+          className="animate-pulse rounded-[26px] border bg-white p-5 shadow-sm sm:p-7"
           style={{ borderColor: "rgba(10,22,40,0.07)" }}
         >
           <div
