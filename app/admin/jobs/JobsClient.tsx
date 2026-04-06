@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Archive, ArchiveRestore, Pencil, Plus, X } from "lucide-react";
+import { Archive, ArchiveRestore, Pencil, Plus, Trash2, X } from "lucide-react";
 
 export type JobRow = {
   id: string;
@@ -355,6 +355,7 @@ function JobCard({
   onToggle,
   onArchive,
   onRestore,
+  onDelete,
 }: {
   job: JobRow;
   busy: boolean;
@@ -362,7 +363,9 @@ function JobCard({
   onToggle: () => void;
   onArchive: () => void;
   onRestore: () => void;
+  onDelete: () => void;
 }) {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const meta = [
     job.location,
     job.employment_type,
@@ -440,17 +443,54 @@ function JobCard({
 
         <div className="flex shrink-0 items-center gap-2 pt-0.5">
           {job.archived ? (
-            /* Archived: only show Restore button */
-            <button
-              onClick={onRestore}
-              disabled={busy}
-              className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-gray-50 disabled:opacity-50"
-              style={{ borderColor: "rgba(10,22,40,0.12)", color: "rgba(26,26,26,0.6)" }}
-              aria-label={`Restore ${job.title}`}
-            >
-              <ArchiveRestore size={12} />
-              Restore
-            </button>
+            /* Archived: Restore + Delete (with inline confirmation) */
+            confirmingDelete ? (
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium" style={{ color: "rgba(26,26,26,0.55)" }}>
+                  Delete permanently?
+                </span>
+                <button
+                  onClick={() => { setConfirmingDelete(false); onDelete(); }}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold text-white transition-opacity disabled:opacity-50"
+                  style={{ backgroundColor: "#DC2626" }}
+                >
+                  <Trash2 size={11} />
+                  Delete
+                </button>
+                <button
+                  onClick={() => setConfirmingDelete(false)}
+                  disabled={busy}
+                  className="inline-flex items-center rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-gray-50 disabled:opacity-50"
+                  style={{ borderColor: "rgba(10,22,40,0.12)", color: "rgba(26,26,26,0.6)" }}
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={onRestore}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-gray-50 disabled:opacity-50"
+                  style={{ borderColor: "rgba(10,22,40,0.12)", color: "rgba(26,26,26,0.6)" }}
+                  aria-label={`Restore ${job.title}`}
+                >
+                  <ArchiveRestore size={12} />
+                  Restore
+                </button>
+                <button
+                  onClick={() => setConfirmingDelete(true)}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                  style={{ borderColor: "rgba(10,22,40,0.12)", color: "rgba(26,26,26,0.45)" }}
+                  aria-label={`Delete ${job.title}`}
+                >
+                  <Trash2 size={12} />
+                  Delete
+                </button>
+              </>
+            )
           ) : (
             /* Live: show Edit, Archive, and active toggle */
             <>
@@ -570,6 +610,20 @@ export default function JobsClient({
     setBusyId(id, false);
   }
 
+  async function handleDelete(id: string) {
+    setBusyId(id, true);
+    setActionError(null);
+    const supabase = createClient();
+    const { error } = await supabase.from("jobs").delete().eq("id", id);
+
+    if (error) {
+      setActionError(`Failed to delete: ${error.message}`);
+    } else {
+      setJobs((prev) => prev.filter((j) => j.id !== id));
+    }
+    setBusyId(id, false);
+  }
+
   async function handleRestore(id: string) {
     setBusyId(id, true);
     setActionError(null);
@@ -680,6 +734,7 @@ export default function JobsClient({
               onToggle={() => handleToggle(job.id, job.active)}
               onArchive={() => handleArchive(job.id)}
               onRestore={() => handleRestore(job.id)}
+              onDelete={() => handleDelete(job.id)}
             />
           ))}
         </div>
@@ -731,6 +786,7 @@ export default function JobsClient({
                   onToggle={() => handleToggle(job.id, job.active)}
                   onArchive={() => handleArchive(job.id)}
                   onRestore={() => handleRestore(job.id)}
+                  onDelete={() => handleDelete(job.id)}
                 />
               ))}
             </div>

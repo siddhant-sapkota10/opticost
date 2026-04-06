@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "OptiCost Consulting",
   description:
     "Specialist advisory firm delivering defensible cost and financial insights across government and Defence programs.",
+  icons: {
+    icon: "/magnifying.png",
+  },
 };
 
 export default function RootLayout({

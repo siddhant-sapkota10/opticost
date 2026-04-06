@@ -1,6 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Mail, ExternalLink } from "lucide-react";
+import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 import Navbar from "../components/Navbar";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Our People | OptiCost Consulting",
@@ -18,58 +23,46 @@ const C = {
   white: "#FFFFFF",
 } as const;
 
-const team = [
-  {
-    name: "Shiva Sapkota",
-    initials: "SS",
-    title: "Principal Consultant (Commercial Finance)",
-    bio: "A senior commercial finance leader with 20+ years of experience across Defence, ATO, NSW Transport, and Treasury.",
-    bullets: [
-      "Expert in costing, pricing, and financial modelling for multi-billion-dollar programs",
-      "Proven leadership in commercial reform and operating model transformation",
-      "Deep expertise in Defence tools: ACEIT, CCT, ClearCost, SAP, Oracle",
-    ],
-    tagline: "Leads complex procurement and capability costing engagements.",
-  },
-  {
-    name: "Ramesh Pudasaini",
-    initials: "RP",
-    title: "Principal Consultant (Financial Management)",
-    bio: "A highly experienced financial management specialist with over 25 years across public sector and Big4 consulting.",
-    bullets: [
-      "Expertise in budgeting, audit, and financial operations",
-      "Strong track record supporting Defence and Home Affairs programs",
-      "Experience in end-to-end financial management and governance",
-    ],
-    tagline: "Drives financial discipline and operational excellence.",
-  },
-  {
-    name: "Vijay Kansal",
-    initials: "VK",
-    title: "Senior Consultant (Systems & Process)",
-    bio: "A transformation-focused finance professional with deep experience in systems and process optimisation.",
-    bullets: [
-      "Specialist in business transformation and finance operations",
-      "Strong capability in ERP systems and process improvement",
-      "Experience across APS and private sector",
-    ],
-    tagline: "Enhances efficiency and financial system performance.",
-  },
-  {
-    name: "Anuj Joshi",
-    initials: "AJ",
-    title: "Senior Consultant (Audit & Compliance)",
-    bio: "A strategic finance and audit professional with experience across ANAO, NACC, and international organisations.",
-    bullets: [
-      "Expertise in audit, compliance, and PGPA framework",
-      "Strong experience in executive financial reporting and analysis",
-      "Proven leadership in complex audit engagements",
-    ],
-    tagline: "Ensures compliance, assurance, and financial integrity.",
-  },
-] as const;
+type PersonRow = {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  email: string;
+  linkedin_url: string;
+  photo_url: string;
+};
 
-export default function PeoplePage() {
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0] ?? "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+export default async function PeoplePage() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { data } = await supabase
+    .from("people")
+    .select("id, name, role, bio, email, linkedin_url, photo_url")
+    .eq("active", true)
+    .order("display_order", { ascending: true })
+    .order("name", { ascending: true });
+
+  const team: PersonRow[] = (data ?? []).map((p) => ({
+    id: p.id as string,
+    name: p.name as string,
+    role: (p.role as string) ?? "",
+    bio: (p.bio as string) ?? "",
+    email: (p.email as string) ?? "",
+    linkedin_url: (p.linkedin_url as string) ?? "",
+    photo_url: (p.photo_url as string) ?? "",
+  }));
+
   return (
     <div
       className="min-h-screen overflow-x-hidden"
@@ -93,7 +86,6 @@ export default function PeoplePage() {
             `,
           }}
         />
-
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -left-20 top-20 h-72 w-72 rounded-full blur-3xl"
@@ -115,10 +107,7 @@ export default function PeoplePage() {
                 color: C.brightGreen,
               }}
             >
-              <span
-                className="h-2 w-2 rounded-full"
-                style={{ backgroundColor: C.brightGreen }}
-              />
+              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: C.brightGreen }} />
               Our People
             </div>
 
@@ -144,7 +133,6 @@ export default function PeoplePage() {
                 Get in Touch
                 <ArrowRight size={18} />
               </Link>
-
               <Link
                 href="/services"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3.5 text-sm font-bold transition-colors duration-300"
@@ -173,14 +161,9 @@ export default function PeoplePage() {
             >
               The Team
             </span>
-
-            <h2
-              className="mt-3 text-3xl font-bold sm:text-4xl"
-              style={{ color: C.deepNavy }}
-            >
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: C.deepNavy }}>
               Meet our consultants
             </h2>
-
             <p
               className="mt-4 max-w-3xl text-base leading-8"
               style={{ color: C.mutedText }}
@@ -191,19 +174,22 @@ export default function PeoplePage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-2">
-            {team.map((member) => (
-              <PersonCard key={member.name} {...member} />
-            ))}
-          </div>
+          {team.length === 0 ? (
+            <p className="text-sm" style={{ color: C.mutedText }}>
+              Team profiles coming soon.
+            </p>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2">
+              {team.map((member) => (
+                <PersonCard key={member.id} {...member} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       {/* CTA */}
-      <section
-        className="relative overflow-hidden"
-        style={{ backgroundColor: C.deepNavy }}
-      >
+      <section className="relative overflow-hidden" style={{ backgroundColor: C.deepNavy }}>
         <div
           aria-hidden="true"
           className="absolute inset-0"
@@ -212,10 +198,9 @@ export default function PeoplePage() {
               "radial-gradient(circle at 20% 50%, rgba(77,201,47,0.12), transparent 22%), radial-gradient(circle at 80% 40%, rgba(26,109,181,0.18), transparent 24%)",
           }}
         />
-
         <div className="relative mx-auto max-w-5xl px-6 py-20 text-center lg:px-8 lg:py-24">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Work with Australia’s leading Defence finance specialists
+            Work with Australia's leading Defence finance specialists
           </h2>
           <p
             className="mx-auto mt-5 max-w-2xl text-base leading-8 sm:text-lg"
@@ -225,7 +210,6 @@ export default function PeoplePage() {
             strong public sector understanding to support high-stakes programs
             with clarity and confidence.
           </p>
-
           <div className="mt-8">
             <Link
               href="/contact"
@@ -237,87 +221,81 @@ export default function PeoplePage() {
             </Link>
           </div>
         </div>
-
         <div className="h-1 w-full" style={{ backgroundColor: C.brightGreen }} />
       </section>
     </div>
   );
 }
 
-function PersonCard({
-  name,
-  initials,
-  title,
-  bio,
-  bullets,
-  tagline,
-}: {
-  name: string;
-  initials: string;
-  title: string;
-  bio: string;
-  bullets: readonly string[];
-  tagline: string;
-}) {
+function PersonCard({ name, role, bio, email, linkedin_url, photo_url }: PersonRow) {
   return (
     <div
       className="group h-full rounded-[26px] border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
       style={{ borderColor: "rgba(10,22,40,0.07)" }}
     >
       <div className="mb-5 flex items-center gap-4">
-        <div
-          className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full text-base font-bold text-white"
-          style={{ backgroundColor: C.elecBlue }}
-        >
-          {initials}
-        </div>
-        <div>
-          <p
-            className="text-base font-bold leading-tight"
-            style={{ color: C.deepNavy }}
+        {photo_url ? (
+          <Image
+            src={photo_url}
+            alt={name}
+            width={56}
+            height={56}
+            className="rounded-full object-cover"
+            style={{ width: 56, height: 56, flexShrink: 0 }}
+          />
+        ) : (
+          <div
+            className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full text-base font-bold text-white"
+            style={{ backgroundColor: C.elecBlue }}
           >
+            {initials(name)}
+          </div>
+        )}
+        <div>
+          <p className="text-base font-bold leading-tight" style={{ color: C.deepNavy }}>
             {name}
           </p>
-          <p
-            className="mt-0.5 text-sm font-medium"
-            style={{ color: C.elecBlue }}
-          >
-            {title}
+          <p className="mt-0.5 text-sm font-medium" style={{ color: C.elecBlue }}>
+            {role}
           </p>
         </div>
       </div>
 
-      <p className="mb-5 text-sm leading-7" style={{ color: C.bodyLight }}>
-        {bio}
-      </p>
+      {bio && (
+        <p className="mb-5 text-sm leading-7" style={{ color: C.bodyLight }}>
+          {bio}
+        </p>
+      )}
 
-      <ul className="mb-6 flex-1 space-y-2.5">
-        {bullets.map((b) => (
-          <li
-            key={b}
-            className="flex items-start gap-2.5 text-sm leading-6"
-            style={{ color: C.bodyLight }}
-          >
-            <span
-              className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full"
-              style={{ backgroundColor: C.brightGreen }}
-            />
-            {b}
-          </li>
-        ))}
-      </ul>
-
-      <div
-        className="mb-4 h-px w-full"
-        style={{ backgroundColor: "rgba(0,0,0,0.07)" }}
-      />
-
-      <p
-        className="text-sm font-medium italic"
-        style={{ color: C.brightGreen }}
-      >
-        {tagline}
-      </p>
+      {(email || linkedin_url) && (
+        <>
+          <div className="mb-4 h-px w-full" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
+          <div className="flex flex-wrap items-center gap-3">
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors hover:underline"
+                style={{ color: C.elecBlue }}
+              >
+                <Mail size={13} />
+                {email}
+              </a>
+            )}
+            {linkedin_url && (
+              <a
+                href={linkedin_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors hover:underline"
+                style={{ color: C.elecBlue }}
+              >
+                <ExternalLink size={13} />
+                LinkedIn
+              </a>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
