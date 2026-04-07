@@ -16,9 +16,9 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "OptiCost Consulting",
+  title: "OptiCost Consulting | Cost Optimisation Experts Australia",
   description:
-    "Specialist advisory firm delivering defensible cost and financial insights across government and Defence programs.",
+    "OptiCost Consulting helps businesses reduce costs, optimise spending, and improve financial performance through data-driven insights.",
   icons: {
     icon: "/magnifying.png",
   },

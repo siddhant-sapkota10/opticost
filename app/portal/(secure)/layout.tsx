@@ -4,6 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import PortalLogoutButton from "../PortalLogoutButton";
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);

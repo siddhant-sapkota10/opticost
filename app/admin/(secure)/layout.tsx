@@ -5,6 +5,13 @@ import Link from "next/link";
 import LogoutButton from "../LogoutButton";
 import AdminNav from "../AdminNav";
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
