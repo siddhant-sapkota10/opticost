@@ -11,9 +11,7 @@ import {
 import Navbar from "../components/Navbar";
 
 export const metadata = {
-  title: "Services | OptiCost Consulting",
-  description:
-    "Specialist financial advisory services for government and Defence programs — costing, financial management, commercial analysis and more.",
+  title: "Services",
 };
 
 const C = {

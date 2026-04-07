@@ -1,9 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /login
-Disallow: /admin
-Disallow: /admin/*
-Disallow: /portal
-Disallow: /portal/*
 
 Sitemap: https://opticost.com.au/sitemap.xml

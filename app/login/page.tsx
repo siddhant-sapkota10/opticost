@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LoginPageClient from "./LoginPageClient";
 
 export const metadata: Metadata = {
-  title: "Login | OptiCost",
+  title: "Login",
   robots: {
     index: false,
     follow: false,

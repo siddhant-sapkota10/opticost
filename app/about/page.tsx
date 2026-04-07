@@ -5,9 +5,7 @@ import Navbar from "../components/Navbar";
 import { ArrowRight, ExternalLink, Mail } from "lucide-react";
 
 export const metadata = {
-  title: "About | OptiCost Consulting",
-  description:
-    "OptiCost Consulting is a specialist advisory firm delivering defensible cost and financial insights across government and Defence programs.",
+  title: "About",
 };
 
 const C = {
