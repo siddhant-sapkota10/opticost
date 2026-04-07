@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X, User } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
@@ -16,6 +17,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
@@ -39,6 +41,10 @@ export default function Navbar() {
   const portalHref = isUserRole ? "/portal" : "/admin/jobs";
   const portalLabel = isUserRole ? "My Portal" : "Admin";
 
+  function isActivePath(href: string) {
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+
   return (
     <nav
       className="fixed top-0 w-full z-50 transition-all duration-300"
@@ -54,7 +60,23 @@ export default function Navbar() {
         <div className="flex h-[78px] items-center justify-between lg:h-[88px]">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link
+            href="/"
+            className="flex items-center rounded-xl border px-3 py-2 transition-all duration-200"
+            style={
+              pathname === "/"
+                ? {
+                    background:
+                      "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(226,244,221,0.98) 100%)",
+                    borderColor: "rgba(77,201,47,0.55)",
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.18)",
+                  }
+                : {
+                    borderColor: "rgba(255,255,255,0.08)",
+                    backgroundColor: "transparent",
+                  }
+            }
+          >
             <Image
               src="/logo.png"
               alt="OptiCost Consulting"
@@ -71,8 +93,22 @@ export default function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-sm font-semibold tracking-wide transition-all duration-300 hover:text-white"
-                style={{ color: "rgba(255,255,255,0.75)" }}
+                className="inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200"
+                style={
+                  isActivePath(link.href)
+                    ? {
+                        background:
+                          "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(226,244,221,0.98) 100%)",
+                        color: "#0A1628",
+                        borderColor: "rgba(77,201,47,0.55)",
+                        boxShadow: "0 10px 25px rgba(0,0,0,0.18)",
+                      }
+                    : {
+                        color: "rgba(255,255,255,0.84)",
+                        borderColor: "rgba(255,255,255,0.10)",
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                      }
+                }
               >
                 {link.label}
               </Link>
@@ -137,7 +173,22 @@ export default function Navbar() {
                 key={link.label}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-xl px-1 py-1 text-base font-semibold text-white/80 hover:text-white"
+                className="rounded-xl border px-4 py-3 text-base font-semibold transition-all duration-200"
+                style={
+                  isActivePath(link.href)
+                    ? {
+                        background:
+                          "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(226,244,221,0.98) 100%)",
+                        color: "#0A1628",
+                        borderColor: "rgba(77,201,47,0.55)",
+                        boxShadow: "0 10px 25px rgba(0,0,0,0.18)",
+                      }
+                    : {
+                        color: "rgba(255,255,255,0.84)",
+                        borderColor: "rgba(255,255,255,0.10)",
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                      }
+                }
               >
                 {link.label}
               </Link>

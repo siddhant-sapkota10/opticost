@@ -198,7 +198,7 @@ export default function HomePage() {
           />
         )}
 
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-16 lg:grid-cols-2 lg:gap-12 lg:px-8 lg:py-24">
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 pb-14 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:grid-cols-2 lg:gap-12 lg:px-8 lg:pb-24 lg:pt-28">
           {mounted ? (
             <motion.div
               initial={{ opacity: 0, y: 28 }}
@@ -503,15 +503,15 @@ function HeroContent({
   return (
     <>
       <div
-        className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em]"
+        className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] sm:px-4 sm:text-xs sm:tracking-[0.2em]"
         style={{
           borderColor: "rgba(255,255,255,0.14)",
           backgroundColor: "rgba(255,255,255,0.05)",
           color: C.brightGreen,
         }}
       >
-        <span className="h-2 w-2 rounded-full" style={{ backgroundColor: C.brightGreen }} />
-        OptiCost Consulting
+        <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: C.brightGreen }} />
+        <span className="min-w-0 truncate">OptiCost Consulting</span>
       </div>
 
       <h1 className="max-w-xl text-3xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
