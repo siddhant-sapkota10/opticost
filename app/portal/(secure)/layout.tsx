@@ -5,6 +5,10 @@ import Link from "next/link";
 import PortalLogoutButton from "../PortalLogoutButton";
 
 export const metadata = {
+  title: {
+    template: "%s | Portal | OptiCost Consulting",
+    default: "Portal | OptiCost Consulting",
+  },
   robots: {
     index: false,
     follow: false,

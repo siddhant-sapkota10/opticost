@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import { ArrowRight, ExternalLink, Mail } from "lucide-react";
 
 export const metadata = {
-  title: "About",
+  title: "About Us",
 };
 
 const C = {

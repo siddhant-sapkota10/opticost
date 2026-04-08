@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import ApplicationsClient, { type JobGroup } from "../../applications/ApplicationsClient";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Applications",
+};
 
 export default async function AdminApplicationsPage({
   searchParams,

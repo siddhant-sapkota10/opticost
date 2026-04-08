@@ -8,7 +8,7 @@ import Navbar from "../components/Navbar";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Our People | OptiCost Consulting",
+  title: "People",
   description:
     "Senior Defence and public sector finance professionals with decades of real-world experience.",
 };

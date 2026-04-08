@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import PeopleClient from "../../people/PeopleClient";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "People",
+};
 
 export default async function AdminPeoplePage() {
   const cookieStore = await cookies();

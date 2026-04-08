@@ -2,7 +2,7 @@ import MfaClient from "./MfaClient";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
-  title: "Login | OptiCost",
+  title: "Admin Login",
   robots: {
     index: false,
     follow: false,

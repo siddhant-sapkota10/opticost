@@ -6,6 +6,10 @@ import LogoutButton from "../LogoutButton";
 import AdminNav from "../AdminNav";
 
 export const metadata = {
+  title: {
+    template: "%s | Admin | OptiCost Consulting",
+    default: "Admin | OptiCost Consulting",
+  },
   robots: {
     index: false,
     follow: false,

@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "My Applications",
+};
 
 type Application = {
   id: string;
