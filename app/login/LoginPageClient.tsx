@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
+import { isPortalUser } from "@/utils/auth/roles";
 
 type Tab = "signin" | "signup";
 
@@ -37,8 +38,7 @@ export default function LoginPageClient() {
       return;
     }
 
-    const role = data.user?.user_metadata?.role;
-    if (role === "user") {
+    if (isPortalUser(data.user)) {
       router.push("/portal");
     } else {
       router.push("/admin/jobs");

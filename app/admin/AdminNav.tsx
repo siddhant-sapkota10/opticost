@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BriefcaseBusiness, FileText, Users } from "lucide-react";
+import { BriefcaseBusiness, FileText, Shield, Users } from "lucide-react";
 
 const links = [
   { href: "/admin/jobs", label: "Job Listings", icon: BriefcaseBusiness },
   { href: "/admin/applications", label: "Applications", icon: FileText },
   { href: "/admin/people", label: "People", icon: Users },
+  { href: "/admin/access", label: "Admin Access", icon: Shield },
 ];
 
 export default function AdminNav() {

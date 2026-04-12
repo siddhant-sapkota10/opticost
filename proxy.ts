@@ -1,12 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
+import { isAdminUser, isPortalUser } from "@/utils/auth/roles";
 
 export async function proxy(request: NextRequest) {
   const { supabaseResponse, user, claims } = await updateSession(request);
   const pathname = request.nextUrl.pathname;
 
-  const isUser = user?.user_metadata?.role === "user";
-  const isAdmin = Boolean(user) && !isUser;
+  const isUser = isPortalUser(user, claims);
+  const isAdmin = isAdminUser(user, claims);
   const isAdminMfaPath = pathname.startsWith("/admin/mfa");
   const isPortalMfaPath = pathname.startsWith("/portal/mfa");
   const hasAdminMfa = claims?.aal === "aal2";

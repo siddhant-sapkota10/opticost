@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { isPortalUser } from "@/utils/auth/roles";
 
 type VerifiedFactor = {
   id: string;
@@ -76,7 +77,7 @@ export default function MfaClient() {
         return;
       }
 
-      if (userData.user.user_metadata?.role === "user") {
+      if (isPortalUser(userData.user)) {
         router.replace("/portal");
         router.refresh();
         return;

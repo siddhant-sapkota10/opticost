@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X, User } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { isPortalUser } from "@/utils/auth/roles";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 const navLinks = [
@@ -37,7 +38,7 @@ export default function Navbar() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const isUserRole = user?.user_metadata?.role === "user";
+  const isUserRole = isPortalUser(user);
   const portalHref = isUserRole ? "/portal" : "/admin/jobs";
   const portalLabel = isUserRole ? "My Portal" : "Admin";
 

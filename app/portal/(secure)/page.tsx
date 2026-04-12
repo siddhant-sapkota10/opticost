@@ -13,7 +13,6 @@ type Application = {
   job_title: string;
   created_at: string;
   status: string;
-  notes: string | null;
   archived: boolean;
 };
 
@@ -87,7 +86,7 @@ export default async function PortalPage() {
 
   const { data: applications } = await supabase
     .from("applications")
-    .select("id, job_title, created_at, status, notes, archived")
+    .select("id, job_title, created_at, status, archived")
     .eq("email", user!.email)
     .eq("archived", false)
     .order("created_at", { ascending: false });
@@ -184,25 +183,6 @@ export default async function PortalPage() {
                 </div>
                 <StatusBadge status={app.status} />
               </div>
-
-              {app.notes && (
-                <div
-                  className="mt-4 rounded-xl px-4 py-3 text-sm"
-                  style={{
-                    backgroundColor: "rgba(10,22,40,0.03)",
-                    border: "1px solid rgba(10,22,40,0.06)",
-                    color: "rgba(10,22,40,0.65)",
-                  }}
-                >
-                  <span
-                    className="mr-1.5 text-xs font-semibold uppercase tracking-widest"
-                    style={{ color: "rgba(10,22,40,0.35)" }}
-                  >
-                    Note:
-                  </span>
-                  {app.notes}
-                </div>
-              )}
             </div>
           ))}
         </div>
